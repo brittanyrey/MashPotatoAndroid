@@ -1,0 +1,46 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="edu.wm.mashpotato"
+    android:versionCode="1"
+    android:versionName="1.0" >
+    
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="16" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity android:name="edu.wm.werewolf.CreateActivity" >
+        </activity>
+        <activity android:name="edu.wm.werewolf.GameJoinActivity" >
+        </activity>
+        <activity android:name="edu.wm.werewolf.HomeScreenActivity" >
+        </activity>
+        <activity android:name="edu.wm.werewolf.InitGameActivity" >
+        </activity>
+        <activity android:name="edu.wm.werewolf.JoinActivity" >
+        </activity>
+        
+        <activity android:name="edu.wm.werewolf.RegisterActivity" >
+        </activity>
+        
+         <activity
+            android:name="edu.wm.werewolf.LoginActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        
+    </application>
+
+</manifest>

@@ -1,0 +1,33 @@
+<resources>
+
+    <string name="app_name">MashPotato</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="username">Username: </string>
+    <string name="password">Password: </string>
+    <string name="verifyPassword">Verify Password: </string>
+    <string name="firstName">First Name: </string>
+    <string name="lastName">Last Name: </string>
+    <string name="register">Register</string>
+    <string name="login">Login</string>
+    <string name="logout">Log Out</string>
+    <string name="error_field_required">Error-This field is required.</string>
+    <string name="error_invalid_password">Error-Password invalid.</string>
+    <string name="error_incorrect_password">Error-Incorrect password.</string>
+    <string name="numDaysAlive">Number of Days Alive: </string>
+    <string name="TimeOfDay">Time of Day: </string>
+    <string name="playerList">Player List</string>
+    <string name="newGame">Create a Game</string>
+    <string name="stats">Stats</string>
+    <string name="statsTitle">Stats For: </string>
+    <string name="numKills">Number Of Kills: </string>
+    <string name="findKillable">Find players near enough to kill. </string>
+    <string name="playerType">Player Type: </string>
+    <string name="enterTime">Enter time for each Day/Night cycle (in minutes): </string>
+    <string name="joinGame">Join a Game </string>
+    <string name="score">Score: </string>
+    <string name="playerStatus">Player Status: </string>
+    <string name="Reset">Refresh</string>
+
+</resources>
