@@ -1,7 +1,7 @@
 package edu.wm.mashpotato.web;
 
 public final class Constants {
-	private static final String url = "http://gentle-retreat-6423.herokuapp.com/";
+	public static final String url = "http://gentle-retreat-6423.herokuapp.com/";
 	public static final String addUser = url + "addUser";
     public static final String lifeSpan = "lifeSpan";
     public static final String lng = "lng";

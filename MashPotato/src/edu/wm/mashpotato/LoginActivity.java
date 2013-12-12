@@ -14,9 +14,11 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class LoginActivity extends Activity {
 
@@ -30,6 +32,8 @@ public class LoginActivity extends Activity {
 	private String username;
 	private String password;
 	private boolean isAdmin;
+	
+	private static final String TAG = "LoginActivity";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -78,9 +82,10 @@ public class LoginActivity extends Activity {
 
 		boolean cancel = false;
 		View focusView = null;
-
+		Log.v(TAG, password);
 		// Check for a valid password.
 		if (TextUtils.isEmpty(password)) {
+			Log.v(TAG, "Empty password: " + password);
 			passwordText.setError(getString(R.string.error_field_required));
 			focusView = passwordText;
 			cancel = true;
@@ -98,7 +103,7 @@ public class LoginActivity extends Activity {
 			focusView.requestFocus();
 		} else {
 			mAuthTask = new UserLoginTask(false, usernameText.getText().toString(), passwordText.getText().toString(), null, false, false);
-			mAuthTask.execute(new String[] {Constants.gameStatus});
+			mAuthTask.execute(new String[] {Constants.url});
 		}
 	}
 
@@ -126,6 +131,7 @@ public class LoginActivity extends Activity {
 			if (resp.success) {
 				Intent intent = new Intent(getApplicationContext(),
 						HomeScreenActivity.class);
+				Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_SHORT).show();
 				intent.putExtra("username", usernameText.getText()
 						.toString());
 				intent.putExtra("password", passwordText.getText()
@@ -137,6 +143,7 @@ public class LoginActivity extends Activity {
 				passwordText
 						.setError(getString(R.string.error_incorrect_password));
 				passwordText.requestFocus();
+				Toast.makeText(getApplicationContext(), "Failed!", Toast.LENGTH_SHORT).show();
 			}
 		}
 

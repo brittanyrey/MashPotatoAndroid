@@ -9,14 +9,16 @@ public class ResponseObject {
 	public String status;
 	public Game game;
 	public boolean success;
-	private final static String TAG = "Response";
+	private final static String TAG = "ResponseObject";
 	public static ResponseObject createResponse(String resp, boolean lobby) throws JSONException{
+		Log.v(TAG, resp);
 		JSONObject obj = new JSONObject(resp);
 		ResponseObject retVal = new ResponseObject();
 		retVal.status = obj.getString(Constants.status);
 		retVal.success = retVal.status.equals(Constants.success);
-		if(!lobby){
-			obj = obj.getJSONObject(Constants.game);
+		boolean sucker = obj.has(Constants.game);
+		if(!lobby && sucker){
+//			obj = obj.getJSONObject(Constants.game);
 			Log.v(TAG, obj.toString());
 //			double lat = obj.get
 //			Game g = new Game(obj.getString(Constants.id), obj.getString(Constants.owner),
