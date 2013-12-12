@@ -7,6 +7,16 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+
+import edu.wm.mashpotato.web.Constants;
+import edu.wm.mashpotato.web.ResponseObject;
+import edu.wm.mashpotato.web.WebTask;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -74,14 +84,15 @@ public class RegisterActivity extends Activity {
 		registerButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				System.out.println("set up");
-				AsyncTaskRunner runner = new AsyncTaskRunner();
-				runner.execute();
+				List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+				pairs.add(new BasicNameValuePair("userName", usernameText.getText().toString()));
+				pairs.add(new BasicNameValuePair("id", usernameText.getText().toString()));
+				pairs.add(new BasicNameValuePair("firstName", firstNameText.getText().toString()));
+				pairs.add(new BasicNameValuePair("lastName", lastNameText.getText().toString()));
+				pairs.add(new BasicNameValuePair("hashedPassword", passwordText.getText().toString()));
+				AsyncTaskRunner runner = new AsyncTaskRunner(true, "admin", "admin", pairs, true, false);
+				runner.execute(new String[]{Constants.addUser});
 				// saveUser(v);
-				Intent intent = new Intent(getApplicationContext(),
-						LoginActivity.class);
-				finish();
-				startActivity(intent);
-
 			}
 		});
 
@@ -133,100 +144,13 @@ public class RegisterActivity extends Activity {
 		 */
 	}
 
-	private class AsyncTaskRunner extends AsyncTask<String, String, String> {
+	private class AsyncTaskRunner extends WebTask {
 
-		private String resp;
-
-		@Override
-		protected String doInBackground(String... params) {
-			publishProgress("Sleeping..."); // Calls onProgressUpdate()
-
-			username = usernameText.getText().toString();
-			firstName = firstNameText.getText().toString();
-			lastName = lastNameText.getText().toString();
-			id = usernameText.getText().toString();
-			try {
-//				hashedPassword = Hasher.md5(passwordText.getText().toString());
-//				System.out.println(hashedPassword);
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-
-			String data = "";
-			try {
-				data = URLEncoder.encode("username", "UTF-8") + "="
-						+ URLEncoder.encode(username, "UTF-8");
-				data += "&" + URLEncoder.encode("firstName", "UTF-8") + "="
-						+ URLEncoder.encode(firstName, "UTF-8");
-
-				data += "&" + URLEncoder.encode("lastName", "UTF-8") + "="
-						+ URLEncoder.encode(lastName, "UTF-8");
-
-				data += "&" + URLEncoder.encode("id", "UTF-8") + "="
-						+ URLEncoder.encode(id, "UTF-8");
-
-				data += "&" + URLEncoder.encode("hashedPassword", "UTF-8")
-						+ "=" + URLEncoder.encode(hashedPassword, "UTF-8");
-
-				data += "&" + URLEncoder.encode("imageURL", "UTF-8") + "="
-						+ URLEncoder.encode(imageURL, "UTF-8");
-
-				data += "&" + URLEncoder.encode("isAdmin", "UTF-8") + "="
-						+ URLEncoder.encode("false", "UTF-8");
-
-				System.out.println(data);
-
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
-
-			String text = "";
-			BufferedReader reader = null;
-
-			try {
-
-				URL url = new URL(
-						"http://mighty-sea-1005.herokuapp.com/addUser/");
-
-				// Send POST data request
-
-				URLConnection conn = url.openConnection();
-				conn.setDoOutput(true);
-				OutputStreamWriter wr = new OutputStreamWriter(
-						conn.getOutputStream());
-				wr.write(data);
-				wr.flush();
-
-				// Get the server response
-
-				reader = new BufferedReader(new InputStreamReader(
-						conn.getInputStream()));
-				StringBuilder sb = new StringBuilder();
-				String line = null;
-
-				// Read Server Response
-				while ((line = reader.readLine()) != null) {
-					// Append server response in string
-					sb.append(line + "\n");
-				}
-
-				text = sb.toString();
-			} catch (Exception ex) {
-
-			} finally {
-				try {
-
-					reader.close();
-				}
-
-				catch (Exception ex) {
-				}
-			}
-
-			// Show response on activity
-			System.out.println(text);
-
-			return resp;
+		public AsyncTaskRunner(boolean hasPairs, String username,
+				String password, List<NameValuePair> pairs, boolean isPost,
+				boolean lobby) {
+			super(hasPairs, username, password, pairs, isPost, lobby);
+			// TODO Auto-generated constructor stub
 		}
 
 		/*
@@ -236,32 +160,21 @@ public class RegisterActivity extends Activity {
 		 */
 		@Override
 		protected void onPostExecute(String result) {
-			// execution of result of Long time consuming operation
-			// finalResult.setText(result);
+			ResponseObject resp = new ResponseObject();
+			resp.success = false;
+			try {
+				resp = ResponseObject.createResponse(result, this.lobby);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			if(resp.success){
+				Intent intent = new Intent(getApplicationContext(),
+					LoginActivity.class);
+				finish();
+				startActivity(intent);
+			}
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see android.os.AsyncTask#onPreExecute()
-		 */
-		@Override
-		protected void onPreExecute() {
-			// Things to be done before execution of long running operation. For
-			// example showing ProgessDialog
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see android.os.AsyncTask#onProgressUpdate(Progress[])
-		 */
-		@Override
-		protected void onProgressUpdate(String... text) {
-			// finalResult.setText(text[0]);
-			// Things to be done while execution of long running operation is in
-			// progress. For example updating ProgessDialog
-		}
 	}
 
 	public class GalleryImageAdapter extends BaseAdapter 

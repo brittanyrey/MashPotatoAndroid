@@ -1,6 +1,14 @@
 package edu.wm.mashpotato;
 
 
+import java.util.List;
+
+import org.apache.http.NameValuePair;
+import org.json.JSONException;
+
+import edu.wm.mashpotato.web.Constants;
+import edu.wm.mashpotato.web.ResponseObject;
+import edu.wm.mashpotato.web.WebTask;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -39,6 +47,7 @@ public class LoginActivity extends Activity {
 		} else {
 			username = savedInstanceState.getString("username");
 		}
+
 
 		registerButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
@@ -88,8 +97,8 @@ public class LoginActivity extends Activity {
 			// There was an error
 			focusView.requestFocus();
 		} else {
-			mAuthTask = new UserLoginTask();
-			mAuthTask.execute((Void) null);
+			mAuthTask = new UserLoginTask(false, usernameText.getText().toString(), passwordText.getText().toString(), null, false, false);
+			mAuthTask.execute(new String[] {Constants.gameStatus});
 		}
 	}
 
@@ -97,54 +106,24 @@ public class LoginActivity extends Activity {
 	 * Represents an asynchronous login/registration task used to authenticate
 	 * the user.
 	 */
-	public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-		@Override
-		protected Boolean doInBackground(Void... params) {
-
-//			String hashedPassword = null;
-//			try {
-//				hashedPassword = Hasher.md5(password);
-//				System.out.println("hashed password ==== " + hashedPassword);
-//
-//				ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
-//				postParameters
-//						.add(new BasicNameValuePair("user", username));
-//
-//				String response = null;
-//
-//				response = CustomHttpClient.executeHttpPost(
-//						"http://mighty-sea-1005.herokuapp.com/login/",
-//						postParameters);
-//				String res = response.toString();
-//				System.out.println(res);
-//
-//				List <String> resList = Arrays.asList(res.split(","));
-//				System.out.println("to List "+resList.get(1).substring(1, resList.get(1).length() - 2));
-//				
-//				String resPWD = resList.get(0).substring(2, resList.get(0).length() - 1);
-//				isAdmin = Boolean.parseBoolean(resList.get(1).substring(1, resList.get(1).length() - 3));
-//				
-//				System.out.println("retrieved password ==== " + resPWD + "\n isAdmin === " +isAdmin);
-//
-//				if (hashedPassword.equals(resPWD)) {
-//					System.out.println("IT WORKS!!!");
-//					return true;
-//				}
-//				else{
-//					System.out.println("its broken...");
-//					return false;
-//				}
-//			} catch (Exception e) {
-//				System.out.println("it failed :( :( :((((((((((((((((((((((" + e.toString());
-//			} 
-			return true;
+	public class UserLoginTask extends WebTask {
+		public UserLoginTask(boolean hasPairs, String username,
+				String password, List<NameValuePair> pairs, boolean isPost, boolean lobby) {
+			super(hasPairs, username, password, pairs, isPost, lobby);
 		}
 
-		@Override
-		protected void onPostExecute(final Boolean success) {
-			mAuthTask = null;
 
-			if (success) {
+		@Override
+		protected void onPostExecute(String result) {
+			mAuthTask = null;
+			ResponseObject resp = new ResponseObject();
+			resp.success = false;
+			try {
+				resp = ResponseObject.createResponse(result, this.lobby);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			if (resp.success) {
 				Intent intent = new Intent(getApplicationContext(),
 						HomeScreenActivity.class);
 				intent.putExtra("username", usernameText.getText()
