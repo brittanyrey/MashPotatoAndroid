@@ -20,4 +20,8 @@ public final class Constants {
 	public static String maxRoundTime = "maxRoundTime";
 	public static String owner = "owner";
 	public static String gameStatus = url + "gameStatus";
+	public static String players = "players";
+	public static String isOut = "isOut";
+	public static String hasPotato = "hasPotato";
+	public static String score = "score";
 }

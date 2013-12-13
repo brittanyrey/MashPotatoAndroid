@@ -1,6 +1,8 @@
 package edu.wm.mashpotato.web;
 
-public class Potato {
+import java.io.Serializable;
+
+public class Potato  implements Serializable{
     private String pId;
     private int multiplier;
     private long creationDate;

@@ -1,8 +1,9 @@
 package edu.wm.mashpotato.web;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Player {
+public class Player  implements Serializable{
     public String getId() {
 		return id;
 	}

@@ -9,6 +9,7 @@ import android.nfc.NfcAdapter;
 import android.nfc.NfcAdapter.CreateNdefMessageCallback;
 import android.nfc.NfcAdapter.OnNdefPushCompleteCallback;
 import android.nfc.NfcEvent;
+import android.nfc.NfcManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,16 +19,21 @@ import android.widget.Toast;
 public class HomeScreenActivity extends Activity implements CreateNdefMessageCallback,
 OnNdefPushCompleteCallback {
 	NfcAdapter mNfcAdapter;
+	NfcManager mNfcManager;
 	private static final int MESSAGE_SENT = 1;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.home_screen);
 		mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
+		
         // Register callback to set NDEF message
         mNfcAdapter.setNdefPushMessageCallback(this, this);
         // Register callback to listen for message-sent success
         mNfcAdapter.setOnNdefPushCompleteCallback(this, this);
+        
+        
+//        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals( getIntent().getAction())) mNfcManager.processIntent(getIntent());
 	}
 	
 	@Override
@@ -45,7 +51,7 @@ OnNdefPushCompleteCallback {
                 "Beam Time: " + time.format("%H:%M:%S"));
         NdefMessage msg = new NdefMessage(
                 new NdefRecord[] { createMimeRecord(
-                        "application/com.example.android.beam", text.getBytes())
+                        "application/edu.wm.mashpotato", text.getBytes())
          /**
           * The Android Application Record (AAR) is commented out. When a device
           * receives a push with an AAR in it, the application specified in the AAR
@@ -77,7 +83,7 @@ OnNdefPushCompleteCallback {
         public void handleMessage(Message msg) {
             switch (msg.what) {
             case MESSAGE_SENT:
-                Toast.makeText(getApplicationContext(), "Message sent!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Potato passed!", Toast.LENGTH_LONG).show();
                 break;
             }
         }

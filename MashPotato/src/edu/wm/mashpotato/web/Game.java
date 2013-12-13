@@ -1,11 +1,12 @@
 package edu.wm.mashpotato.web;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Game {
+public class Game implements Serializable{
     public Game(String id, String owner, long creationDate, long maxRoundTime,
 			int roundCount, int state, double[] originalLocation,
-			int potatoCount, List<String> players, List<String> potato) {
+			int potatoCount, List<Player> players, List<Potato> potato) {
 		super();
 		this.id = id;
 		this.owner = owner;
@@ -26,6 +27,6 @@ public class Game {
     private int state;
     private double[] originalLocation;
     private int potatoCount;
-    private List<String>players;
-    private List<String>potato; 
+    private List<Player>players;
+    private List<Potato>potato; 
 }
