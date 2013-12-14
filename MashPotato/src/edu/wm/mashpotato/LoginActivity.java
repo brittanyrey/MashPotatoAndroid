@@ -46,13 +46,6 @@ public class LoginActivity extends Activity {
 		registerButton = (Button) findViewById(R.id.createButton);
 		loginButton = (Button) findViewById(R.id.loginButton);
 
-		if (savedInstanceState == null) {
-			username = "";
-		} else {
-			username = savedInstanceState.getString("username");
-		}
-
-
 		registerButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				System.out.println("register");
@@ -83,6 +76,7 @@ public class LoginActivity extends Activity {
 		boolean cancel = false;
 		View focusView = null;
 		Log.v(TAG, password);
+		
 		// Check for a valid password.
 		if (TextUtils.isEmpty(password)) {
 			Log.v(TAG, "Empty password: " + password);
@@ -130,7 +124,7 @@ public class LoginActivity extends Activity {
 			}
 			if (resp.success) {
 				Intent intent = new Intent(getApplicationContext(),
-						HomeScreenActivity.class);
+						InitGameActivity.class);
 				Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_SHORT).show();
 				intent.putExtra("username", usernameText.getText()
 						.toString());

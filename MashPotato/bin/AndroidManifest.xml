@@ -27,7 +27,7 @@
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="application/com.example.android.beam" />
+                <data android:mimeType="application/edu.wm.mashpotato" />
             </intent-filter>
         </activity>
         <activity android:name="edu.wm.mashpotato.InitGameActivity" >

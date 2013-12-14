@@ -16,18 +16,25 @@
     <string name="error_invalid_password">Error-Password invalid.</string>
     <string name="error_incorrect_password">Error-Incorrect password.</string>
     <string name="numDaysAlive">Number of Days Alive: </string>
-    <string name="TimeOfDay">Time of Day: </string>
+    <string name="date">Date Created </string>
     <string name="playerList">Player List</string>
     <string name="newGame">Create a Game</string>
+    <string name="newGame1">Create Game</string>
     <string name="stats">Stats</string>
+    <string name="upgrades">Upgrades and Gems</string>
     <string name="statsTitle">Stats For: </string>
     <string name="numKills">Number Of Kills: </string>
     <string name="findKillable">Find players near enough to kill. </string>
     <string name="playerType">Player Type: </string>
-    <string name="enterTime">Enter time for each Day/Night cycle (in minutes): </string>
+    <string name="selectAGame">Select a game from the list below. </string>
     <string name="joinGame">Join a Game </string>
     <string name="score">Score: </string>
     <string name="playerStatus">Player Status: </string>
+    <string name="numberOfPotatoes">Select Max Number of Potatoes: </string>
+    <string name="numOfPotatoes">Max Number of Potatoes: </string>
+    <string name="upgradesAndGems">Allow the use of upgrades and gems.</string>
+    <string name="playersInGame">List of Players in Game</string>
     <string name="Reset">Refresh</string>
+    <string name="joinThisGame">Join this game. </string>
 
 </resources>

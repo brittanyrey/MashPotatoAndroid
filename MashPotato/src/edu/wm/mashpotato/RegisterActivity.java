@@ -40,12 +40,12 @@ public class RegisterActivity extends Activity {
 	private EditText usernameText;
 	private EditText passwordText;
 	private EditText verifyPasswordText;
-	//TODO MAKE VERIFY ACTUALLY ERROR CHECK OR DELETE IT
+	// TODO MAKE VERIFY ACTUALLY ERROR CHECK OR DELETE IT
 	private EditText firstNameText;
 	private EditText lastNameText;
 	private Button registerButton;
 	private TextView text;
-	
+
 	private String username;
 	private String password;
 	private String hashedPassword;
@@ -55,11 +55,10 @@ public class RegisterActivity extends Activity {
 	private String imageURL;
 
 	ImageView selectedImage;
-//	private Integer[] mImageIds = { R.drawable.cube, R.drawable.cone,
-//			R.drawable.doublepyramid, R.drawable.pyramid };
 
-	//TODO get user images ^^
-	
+	 private Integer[] mImageIds = { R.drawable.cube, R.drawable.cone,
+	 R.drawable.doublepyramid, R.drawable.pyramid };
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -72,27 +71,28 @@ public class RegisterActivity extends Activity {
 		lastNameText = (EditText) findViewById(R.id.lastName);
 		text = (TextView) findViewById(R.id.textVieww);
 		registerButton = (Button) findViewById(R.id.createButton);
-		
-		text.setText("Choose an avatar.");
 
-		if (savedInstanceState == null) {
-			username = "";
-		} else {
-			username = savedInstanceState.getString("username");
-		}
+		text.setText("Choose an avatar.");
 
 		registerButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				System.out.println("set up");
-				List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-				pairs.add(new BasicNameValuePair("userName", usernameText.getText().toString()));
-				pairs.add(new BasicNameValuePair("id", usernameText.getText().toString()));
-				pairs.add(new BasicNameValuePair("firstName", firstNameText.getText().toString()));
-				pairs.add(new BasicNameValuePair("lastName", lastNameText.getText().toString()));
-				pairs.add(new BasicNameValuePair("hashedPassword", passwordText.getText().toString()));
-				AsyncTaskRunner runner = new AsyncTaskRunner(true, "admin", "admin", pairs, true, false);
-				runner.execute(new String[]{Constants.addUser});
-				// saveUser(v);
+				if (verifyPasswords()){
+					List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+					pairs.add(new BasicNameValuePair("userName", usernameText
+							.getText().toString()));
+					pairs.add(new BasicNameValuePair("id", usernameText.getText()
+							.toString()));
+					pairs.add(new BasicNameValuePair("firstName", firstNameText
+							.getText().toString()));
+					pairs.add(new BasicNameValuePair("lastName", lastNameText
+							.getText().toString()));
+					pairs.add(new BasicNameValuePair("hashedPassword", passwordText
+							.getText().toString()));
+					AsyncTaskRunner runner = new AsyncTaskRunner(true, "admin",
+							"admin", pairs, true, false);
+					runner.execute(new String[] { Constants.addUser });
+				}
 			}
 		});
 
@@ -105,9 +105,8 @@ public class RegisterActivity extends Activity {
 		gallery.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View v,
 					int position, long id) {
-				//TODO
-//				imageURL = mImageIds[position].toString();
-//				selectedImage.setImageResource(mImageIds[position]);
+				 imageURL = mImageIds[position].toString();
+				 selectedImage.setImageResource(mImageIds[position]);
 			}
 		});
 	}
@@ -124,24 +123,13 @@ public class RegisterActivity extends Activity {
 		return super.onKeyDown(keyCode, event);
 	}
 
-	private void saveUser(View v) {
-		// this is for error handling
-		/*
-		 * if ( usernameText.getText().toString() == null ||
-		 * passwordText.getText().toString() == "" ||
-		 * verifyPasswordText.getText().toString() == "" ||
-		 * firstNameText.getText().toString() == "" ||
-		 * lastNameText.getText().toString() == "") {
-		 * System.out.println("a field is blank");
-		 * usernameText.setError("Your error message"); } else if
-		 * (passwordText.getText() != verifyPasswordText.getText()) {
-		 * System.out.println("passwords do not match ");
-		 * System.out.println(lastNameText.getText().toString() == "");
-		 * System.out.println(lastNameText.getText().toString() == null);
-		 * System.out.println(lastNameText.getText() == null);
-		 * 
-		 * verifyPasswordText.setError("Passwords do not match"); } else{ }
-		 */
+	private boolean verifyPasswords() {
+		if (passwordText.getText() != verifyPasswordText.getText()) {
+			System.out.println("passwords do not match ");
+			verifyPasswordText.setError("Passwords do not match");
+			return false;
+		} 
+		return true;
 	}
 
 	private class AsyncTaskRunner extends WebTask {
@@ -150,7 +138,6 @@ public class RegisterActivity extends Activity {
 				String password, List<NameValuePair> pairs, boolean isPost,
 				boolean lobby) {
 			super(hasPairs, username, password, pairs, isPost, lobby);
-			// TODO Auto-generated constructor stub
 		}
 
 		/*
@@ -167,9 +154,9 @@ public class RegisterActivity extends Activity {
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-			if(resp.success){
+			if (resp.success) {
 				Intent intent = new Intent(getApplicationContext(),
-					LoginActivity.class);
+						LoginActivity.class);
 				finish();
 				startActivity(intent);
 			}
@@ -177,47 +164,39 @@ public class RegisterActivity extends Activity {
 
 	}
 
-	public class GalleryImageAdapter extends BaseAdapter 
-	{
-	    private Context mContext;
+	public class GalleryImageAdapter extends BaseAdapter {
+		private Context mContext;
 
-//	    private Integer[] mImageIds = { R.drawable.cube, R.drawable.cone,
-//				R.drawable.doublepyramid, R.drawable.pyramid };
-//TODO
-	    
-	    
-	    public GalleryImageAdapter(Context context) 
-	    {
-	        mContext = context;
-	    }
+		private Integer[] mImageIds = { R.drawable.cube, R.drawable.cone,
+				R.drawable.doublepyramid, R.drawable.pyramid };
 
-	    public int getCount() {
-	        return 0; //TODO
-	    }
+		public GalleryImageAdapter(Context context) {
+			mContext = context;
+		}
 
-	    public Object getItem(int position) {
-	        return position;
-	    }
+		public int getCount() {
+			return mImageIds.length;
+		}
 
-	    public long getItemId(int position) {
-	        return position;
-	    }
+		public Object getItem(int position) {
+			return position;
+		}
 
+		public long getItemId(int position) {
+			return position;
+		}
 
-	   @Override
-	    public View getView(int index, View view, ViewGroup viewGroup) 
-	    {
-	        // TODO 
-	        ImageView i = new ImageView(mContext);
+		@Override
+		public View getView(int index, View view, ViewGroup viewGroup) {
+			ImageView i = new ImageView(mContext);
 
-	       //i.setImageResource(mImageIds[index]);
-	        i.setLayoutParams(new Gallery.LayoutParams(200, 200));
-	    
-	        i.setScaleType(ImageView.ScaleType.FIT_XY);
+			i.setImageResource(mImageIds[index]);
+			i.setLayoutParams(new Gallery.LayoutParams(200, 200));
 
-	        return i;
-	    }
+			i.setScaleType(ImageView.ScaleType.FIT_XY);
+
+			return i;
+		}
 	}
 
-	
 }
