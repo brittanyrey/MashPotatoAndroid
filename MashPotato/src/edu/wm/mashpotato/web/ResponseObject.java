@@ -1,5 +1,6 @@
 package edu.wm.mashpotato.web;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +10,7 @@ import org.json.JSONObject;
 
 import android.util.Log;
 
-public class ResponseObject {
+public class ResponseObject implements Serializable{
 	public String status;
 	public Game game;
 	public Player me;

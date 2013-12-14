@@ -53,6 +53,7 @@ public class RegisterActivity extends Activity {
 	private String lastName;
 	private String id;
 	private String imageURL;
+	private boolean clicked = false;
 
 	ImageView selectedImage;
 
@@ -77,7 +78,8 @@ public class RegisterActivity extends Activity {
 		registerButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				System.out.println("set up");
-				if (verifyPasswords()){
+				if (verifyPasswords() && !clicked){
+					clicked = true;
 					List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 					pairs.add(new BasicNameValuePair("userName", usernameText
 							.getText().toString()));
@@ -149,6 +151,7 @@ public class RegisterActivity extends Activity {
 		protected void onPostExecute(String result) {
 			ResponseObject resp = new ResponseObject();
 			resp.success = false;
+			clicked = false;
 			try {
 				resp = ResponseObject.createResponse(result, this.lobby);
 			} catch (JSONException e) {

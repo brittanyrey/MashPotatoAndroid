@@ -32,6 +32,7 @@ public class LoginActivity extends Activity {
 	private String username;
 	private String password;
 	private boolean isAdmin;
+	private boolean clicked = false;
 	
 	private static final String TAG = "LoginActivity";
 
@@ -59,7 +60,10 @@ public class LoginActivity extends Activity {
 		loginButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				System.out.println("login");
-				attemptLogin();
+				if(!clicked){
+					clicked = true;
+					attemptLogin();
+				}
 			}
 		});
 	}
@@ -115,6 +119,7 @@ public class LoginActivity extends Activity {
 		@Override
 		protected void onPostExecute(String result) {
 			mAuthTask = null;
+			clicked = false;
 			ResponseObject resp = new ResponseObject();
 			resp.success = false;
 			try {
@@ -123,8 +128,15 @@ public class LoginActivity extends Activity {
 				e.printStackTrace();
 			}
 			if (resp.success) {
-				Intent intent = new Intent(getApplicationContext(),
-						InitGameActivity.class);
+				Intent intent = null;
+				if(!resp.me.getGame().equals("")){
+				intent = new Intent(getApplicationContext(),
+						HomeScreenActivity.class);
+				}else{
+				intent = new Intent(getApplicationContext(),
+						InitGameActivity.class);	
+				}
+				intent.putExtra(Constants.response, resp);
 				Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_SHORT).show();
 				intent.putExtra("username", usernameText.getText()
 						.toString());

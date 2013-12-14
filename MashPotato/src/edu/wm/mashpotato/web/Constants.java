@@ -24,4 +24,5 @@ public final class Constants {
 	public static String isOut = "isOut";
 	public static String hasPotato = "hasPotato";
 	public static String score = "score";
+	public static String response = "response";
 }
