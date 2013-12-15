@@ -3,6 +3,7 @@ package edu.wm.mashpotato;
 import java.nio.charset.Charset;
 
 import edu.wm.mashpotato.accelerometer.SaveThePotatoActivity;
+import edu.wm.mashpotato.web.Game;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -34,10 +35,22 @@ OnNdefPushCompleteCallback {
 	private Button savePotato;
 	private float lastX;
 	
+	private String username;
+	private String password;
+	private Game gameObj;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.home_screen);
+		
+		Bundle extras = getIntent().getExtras();
+		if (extras != null) {
+			username = extras.getString("username");
+			password = extras.getString("password");
+			gameObj = (Game) extras.get("gameObj");
+		}
+		
 		mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
 		
         // Register callback to set NDEF message
@@ -47,6 +60,8 @@ OnNdefPushCompleteCallback {
         
         viewFlipper = (ViewFlipper) findViewById(R.id.ViewFlipper01);
         savePotato = (Button) findViewById(R.id.saveThePotato);
+        
+        viewFlipper.showNext();
         
         savePotato.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {

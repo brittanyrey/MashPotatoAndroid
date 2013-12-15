@@ -7,6 +7,7 @@ import org.apache.http.NameValuePair;
 import org.json.JSONException;
 
 import edu.wm.mashpotato.web.Constants;
+import edu.wm.mashpotato.web.Game;
 import edu.wm.mashpotato.web.ResponseObject;
 import edu.wm.mashpotato.web.WebTask;
 import android.app.Activity;
@@ -33,6 +34,8 @@ public class LoginActivity extends Activity {
 	private String password;
 	private boolean isAdmin;
 	private boolean clicked = false;
+	
+	private Game gameObj;
 	
 	private static final String TAG = "LoginActivity";
 
@@ -124,14 +127,13 @@ public class LoginActivity extends Activity {
 			resp.success = false;
 			try {
 				resp = ResponseObject.createResponse(result, this.lobby, usernameText.getText().toString());
-				System.out.println("response: " + resp.success);
+				System.out.println("response: " + resp.success + " "+resp.game);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
 			if (resp.success) {
 				Intent intent = null;
-				System.out.println(resp.me.getGame());
-				if(!resp.me.getGame().equals("")){
+				if(inGame(resp)){
 				intent = new Intent(getApplicationContext(),
 						HomeScreenActivity.class);
 				}else{
@@ -144,6 +146,7 @@ public class LoginActivity extends Activity {
 						.toString());
 				intent.putExtra("password", passwordText.getText()
 						.toString());
+				intent.putExtra("gameObj", gameObj);
 				finish();
 				startActivity(intent);
 			} else {
@@ -158,6 +161,19 @@ public class LoginActivity extends Activity {
 		protected void onCancelled() {
 			mAuthTask = null;
 		}
+	}
+	
+	private boolean inGame(ResponseObject rObj) {
+		gameObj = rObj.game;
+		//for (int y = 0; y < rObj.lobbyList.size(); y++){
+			for (int x = 0; x < rObj.game.getPlayers().size(); x++) {
+				if(rObj.game.getPlayers().get(x).getId().equals(username)) {
+					return true;
+				}
+			}
+		//}
+		
+		return false;
 	}
 
 }

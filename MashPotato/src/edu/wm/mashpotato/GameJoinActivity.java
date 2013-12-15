@@ -101,16 +101,6 @@ public class GameJoinActivity extends Activity {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-
-				if (true) // TODO response = success
-				{
-					Intent intent = new Intent(getApplicationContext(),
-							HomeScreenActivity.class);
-					finish();
-					startActivity(intent);
-				} else {
-					// TODO error msg
-				}
 			}
 		});
 	}
@@ -186,6 +176,15 @@ public class GameJoinActivity extends Activity {
 		} catch (AuthenticationException e1) {
 			e1.printStackTrace();
 		}
+		Intent intent = new Intent(getApplicationContext(),
+				HomeScreenActivity.class);
+		intent.putExtra("username", username
+				.toString());
+		intent.putExtra("password", password
+				.toString());
+		intent.putExtra("gameObj", gameObj);
+		finish();
+		startActivity(intent);
 	}
 
 	private void joinGame() {
