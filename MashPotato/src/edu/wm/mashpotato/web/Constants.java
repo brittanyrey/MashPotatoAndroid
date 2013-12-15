@@ -2,6 +2,13 @@ package edu.wm.mashpotato.web;
 
 public final class Constants {
 	public static final String url = "http://gentle-retreat-6423.herokuapp.com/";
+	public static final String newGame = url+ "newGame";
+	public static final String gameLobby = url+ "lobby";
+	public static final String joinGame = url+ "joinGame";
+	public static final String startGame = url+ "startGame";
+	public static final String removePlayer = url+ "removePlayer";
+	public static final String getGameInfo = url + "gameStatus/";
+	public static final String login  = url + "login";
 	public static final String addUser = url + "addUser";
     public static final String lifeSpan = "lifeSpan";
     public static final String lng = "lng";
@@ -21,8 +28,8 @@ public final class Constants {
 	public static String owner = "owner";
 	public static String gameStatus = url + "gameStatus";
 	public static String players = "players";
-	public static String isOut = "isOut";
-	public static String hasPotato = "hasPotato";
+	public static String isOut = "out";
+	public static String hasPotato = "hasString";
 	public static String score = "score";
 	public static String response = "response";
 }

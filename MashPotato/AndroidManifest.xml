@@ -1,18 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="edu.wm.mashpotato"
-    android:versionCode="1"
-    android:versionName="1.0" >
-    
-    <uses-permission android:name="android.permission.NFC" />
-    <uses-feature android:name="android.hardware.nfc" android:required="true" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    android:installLocation="auto"
+    android:versionCode="5"
+    android:versionName="1.4.0" >
 
     <uses-sdk
-        android:minSdkVersion="14"
+        android:minSdkVersion="4"
         android:targetSdkVersion="16" />
+
+    <uses-feature
+        android:name="android.hardware.nfc"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.NFC" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:allowBackup="true"
@@ -26,7 +32,9 @@
         <activity android:name="edu.wm.mashpotato.HomeScreenActivity" >
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="application/edu.wm.mashpotato" />
             </intent-filter>
         </activity>
@@ -34,11 +42,18 @@
         </activity>
         <activity android:name="edu.wm.mashpotato.JoinActivity" >
         </activity>
-        
+        <activity android:name="edu.wm.mashpotato.accelerometer.SaveThePotatoActivity" >
+        </activity>
+        <activity android:name="edu.wm.mashpotato.accelerometer.Settings" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity android:name="edu.wm.mashpotato.RegisterActivity" >
         </activity>
-        
-         <activity
+        <activity
             android:name="edu.wm.mashpotato.LoginActivity"
             android:label="@string/app_name" >
             <intent-filter>
@@ -47,7 +62,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
+
+        <service android:name="edu.wm.mashpotato.accelerometer.StepService" />
     </application>
 
 </manifest>

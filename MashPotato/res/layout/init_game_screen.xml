@@ -36,12 +36,14 @@
         android:id="@+id/tableRow21"
          android:layout_marginTop="150dp"
         android:layout_width="wrap_content"
+        android:layout_gravity="right"
         android:layout_height="wrap_content" >
         
     <Button
         android:id="@+id/logout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        
         android:text="@string/logout" />
     
     </TableRow>

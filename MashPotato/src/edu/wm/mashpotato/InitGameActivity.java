@@ -12,10 +12,20 @@ public class InitGameActivity extends Activity {
 	private Button joinButton;
 	private Button logoutButton;
 
+	private String username = "userbase";
+	private String password = "password";
+	private String response = "fail";
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.init_game_screen);
+		
+		Bundle extras = getIntent().getExtras();
+		if (extras != null) {
+			username = extras.getString("username");
+			password = extras.getString("password");
+		}
 
 		createGameButton = (Button) findViewById(R.id.createAGame);
 		joinButton = (Button) findViewById(R.id.joinGame);
@@ -26,6 +36,10 @@ public class InitGameActivity extends Activity {
 				System.out.println("create a game");
 				Intent intent = new Intent(getApplicationContext(),
 						CreateActivity.class);
+				intent.putExtra("username", username
+						.toString());
+				intent.putExtra("password", password
+						.toString());
 				finish();
 				startActivity(intent);
 			}
@@ -36,6 +50,8 @@ public class InitGameActivity extends Activity {
 				System.out.println("join a game");
 				Intent intent = new Intent(getApplicationContext(),
 						JoinActivity.class);
+				intent.putExtra("username", username);
+				intent.putExtra("password", password);
 				finish();
 				startActivity(intent);
 			}

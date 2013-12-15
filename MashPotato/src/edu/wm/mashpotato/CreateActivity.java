@@ -17,6 +17,8 @@ import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
+import edu.wm.mashpotato.web.Constants;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,6 +35,7 @@ public class CreateActivity extends Activity {
 
 	private Button newGameButton;
 	private EditText numPotatoes;
+	private EditText maxRoundLength;
 	private CheckBox gems;
 
 	@Override
@@ -48,7 +51,7 @@ public class CreateActivity extends Activity {
 
 		newGameButton = (Button) findViewById(R.id.newGame);
 		numPotatoes = (EditText) findViewById(R.id.numPotatoes);
-		gems = (CheckBox) findViewById(R.id.checkBox);
+		maxRoundLength = (EditText) findViewById(R.id.maxRoundTime);
 
 		newGameButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
@@ -57,8 +60,7 @@ public class CreateActivity extends Activity {
 				Thread thread = new Thread(new Runnable() {
 					@Override
 					public void run() {
-						// TODO PUT BACK
-						// createGame();
+						 createGame();
 					}
 				});
 				thread.start();
@@ -74,6 +76,8 @@ public class CreateActivity extends Activity {
 					System.out.println("join a game");
 					Intent intent = new Intent(getApplicationContext(),
 							JoinActivity.class);
+					intent.putExtra("username", username);
+					intent.putExtra("password", password);
 					finish();
 					startActivity(intent);
 				} else {
@@ -84,13 +88,11 @@ public class CreateActivity extends Activity {
 	}
 
 	private void createGame() {
-		// Create a new HttpClient and Post Header
-		// TODO CHANGE LINKS
+		System.out.println(username +" "+ password);
 		HttpClient httpclient = new DefaultHttpClient();
-		HttpPost httppost = new HttpPost(
-				"http://mighty-sea-1005.herokuapp.com/admin/newGame");
+		HttpPost httppost = new HttpPost(Constants.newGame);
 		UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(
-				"brittany", "yes");
+				username, password);
 		BasicScheme scheme = new BasicScheme();
 		Header authorizationHeader;
 		try {
@@ -99,16 +101,17 @@ public class CreateActivity extends Activity {
 
 			// Add data
 			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-			nameValuePairs.add(new BasicNameValuePair("id", username));
-			nameValuePairs.add(new BasicNameValuePair("numPotatoes",
-					numPotatoes.getText().toString()));
-			nameValuePairs.add(new BasicNameValuePair("gems", String
-					.valueOf(gems.isChecked())));
+			String time = String.valueOf(Integer.parseInt(maxRoundLength.getText().toString()) * 60000);
+			nameValuePairs.add(new BasicNameValuePair("lifeSpan",
+					time));
+			nameValuePairs.add(new BasicNameValuePair("lat", "0"));
+			nameValuePairs.add(new BasicNameValuePair("lng", "0"));
 			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
 			// Execute HTTP Post Request
 			HttpResponse httpresponse = httpclient.execute(httppost);
 			response = httpresponse.getEntity().toString();
+			System.out.println(response);
 
 		} catch (ClientProtocolException e) {
 		} catch (IOException e) {

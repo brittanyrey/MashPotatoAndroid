@@ -113,6 +113,20 @@ public class RegisterActivity extends Activity {
 		});
 	}
 
+	private boolean verifyPasswords() {
+		verifyPasswordText.setError(null);
+		System.out.println(passwordText.getText() +" "+verifyPasswordText.getText()+ " "+ 
+						passwordText.getText().toString().equals(verifyPasswordText.getText().toString()));
+		if (! passwordText.getText().toString().equals(verifyPasswordText.getText().toString())) {
+			System.out.println("passwords do not match ");
+			verifyPasswordText.setError("Passwords do not match");
+			View focusView = verifyPasswordText;
+			focusView.requestFocus();
+			return false;
+		} 
+		return true;
+	}
+	
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -123,15 +137,6 @@ public class RegisterActivity extends Activity {
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
-	}
-
-	private boolean verifyPasswords() {
-		if (passwordText.getText() != verifyPasswordText.getText()) {
-			System.out.println("passwords do not match ");
-			verifyPasswordText.setError("Passwords do not match");
-			return false;
-		} 
-		return true;
 	}
 
 	private class AsyncTaskRunner extends WebTask {
@@ -153,7 +158,7 @@ public class RegisterActivity extends Activity {
 			resp.success = false;
 			clicked = false;
 			try {
-				resp = ResponseObject.createResponse(result, this.lobby);
+				resp = ResponseObject.createResponse(result, this.lobby, username);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}

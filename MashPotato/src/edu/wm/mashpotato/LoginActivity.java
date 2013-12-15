@@ -44,7 +44,7 @@ public class LoginActivity extends Activity {
 		usernameText = (EditText) findViewById(R.id.username);
 		passwordText = (EditText) findViewById(R.id.password);
 
-		registerButton = (Button) findViewById(R.id.createButton);
+		registerButton = (Button) findViewById(R.id.registerButton);
 		loginButton = (Button) findViewById(R.id.loginButton);
 
 		registerButton.setOnClickListener(new View.OnClickListener() {
@@ -101,7 +101,7 @@ public class LoginActivity extends Activity {
 			focusView.requestFocus();
 		} else {
 			mAuthTask = new UserLoginTask(false, usernameText.getText().toString(), passwordText.getText().toString(), null, false, false);
-			mAuthTask.execute(new String[] {Constants.url});
+			mAuthTask.execute(new String[] {Constants.login});
 		}
 	}
 
@@ -123,12 +123,14 @@ public class LoginActivity extends Activity {
 			ResponseObject resp = new ResponseObject();
 			resp.success = false;
 			try {
-				resp = ResponseObject.createResponse(result, this.lobby);
+				resp = ResponseObject.createResponse(result, this.lobby, usernameText.getText().toString());
+				System.out.println("response: " + resp.success);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
 			if (resp.success) {
 				Intent intent = null;
+				System.out.println(resp.me.getGame());
 				if(!resp.me.getGame().equals("")){
 				intent = new Intent(getApplicationContext(),
 						HomeScreenActivity.class);
@@ -142,7 +144,6 @@ public class LoginActivity extends Activity {
 						.toString());
 				intent.putExtra("password", passwordText.getText()
 						.toString());
-				intent.putExtra("isAdmin", isAdmin);
 				finish();
 				startActivity(intent);
 			} else {

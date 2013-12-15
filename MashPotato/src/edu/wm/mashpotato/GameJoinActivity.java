@@ -7,15 +7,26 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.auth.AuthenticationException;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+
+import edu.wm.mashpotato.web.Constants;
+import edu.wm.mashpotato.web.Game;
+import edu.wm.mashpotato.web.ResponseObject;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -43,6 +54,7 @@ public class GameJoinActivity extends Activity {
 
 	private String username;
 	private String password;
+	private Game gameObj;
 
 	private boolean admin = true;// TODO GET RID OF AND CALL FOR THIS INFO
 
@@ -55,54 +67,22 @@ public class GameJoinActivity extends Activity {
 		if (extras != null) {
 			username = extras.getString("username");
 			password = extras.getString("password");
+			gameObj = (Game) extras.get("gameObj");
 		}
 
 		finalList = new ArrayList<String>();
 		lv = (ListView) findViewById(R.id.listView1);
 		instructions = (TextView) findViewById(R.id.instructions);
 		maxPotatoes = (TextView) findViewById(R.id.numPotatoes);
-		upgrades = (TextView) findViewById(R.id.upgrades);
 		date = (TextView) findViewById(R.id.date);
 		join_start_Button = (Button) findViewById(R.id.joinGame);
 
+		loadLV();
 		updateInfo();
-
-		if (admin) {
-			join_start_Button.setText("Start the game.");
-		} else if (inGame()) {
-			join_start_Button.setText("Leave the game.");
-		}
-
-		// Load list view
-		Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				loadLV();
-			}
-		});
-		thread.start();
-		try {
-			thread.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 
 		ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,
 				android.R.layout.simple_list_item_1, finalList);
 		lv.setAdapter(arrayAdapter);
-
-		lv.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View view,
-					int position, long arg3) {
-				Intent intent = new Intent(getApplicationContext(),
-						GameJoinActivity.class);
-				intent.putExtra("gameID", lv.getItemAtPosition(position)
-						.toString());
-				finish();
-				startActivity(intent);
-			}
-		});
 
 		join_start_Button.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
@@ -136,72 +116,120 @@ public class GameJoinActivity extends Activity {
 	}
 
 	private boolean inGame() {
-		// TODO
+		for (int x = 0; x < gameObj.getPlayers().size(); x++) {
+			if(gameObj.getPlayers().get(x).getId().equals(username)) {
+				return true;
+			}
+		}
 		return false;
 	}
 
 	private void joinOrStartGame() {
-		// TODO
-		if (admin) {
-			// start
+		if (gameObj.getOwner().equals(username)) {
+			startGame();
 		} else if (inGame()) {
-			// leave
+			leaveGame();
 		} else {
-			// join
+			joinGame();
 		}
+	}
 
+	//TODO DOES NOT WORK
+	private void leaveGame() {
+		HttpClient httpclient = new DefaultHttpClient();
+		HttpPost httppost = new HttpPost(Constants.removePlayer);
+		UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(
+				username, password);
+		BasicScheme scheme = new BasicScheme();
+		Header authorizationHeader;
+		try {
+			authorizationHeader = scheme.authenticate(credentials, httppost);
+			httppost.addHeader(authorizationHeader);
+
+			// Add data
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+			nameValuePairs.add(new BasicNameValuePair("playerId", username));
+			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+			// Execute HTTP Post Request
+			HttpResponse httpresponse = httpclient.execute(httppost);
+			HttpEntity responseEntity = httpresponse.getEntity();
+		} catch (ClientProtocolException e) {
+		} catch (IOException e) {
+		} catch (AuthenticationException e1) {
+			e1.printStackTrace();
+		}
+	}
+
+	private void startGame() {
+		HttpClient httpclient = new DefaultHttpClient();
+		HttpPost httppost = new HttpPost(Constants.startGame);
+		UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(
+				username, password);
+		BasicScheme scheme = new BasicScheme();
+		Header authorizationHeader;
+		try {
+			authorizationHeader = scheme.authenticate(credentials, httppost);
+			httppost.addHeader(authorizationHeader);
+
+			// Add data
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+			nameValuePairs
+					.add(new BasicNameValuePair("gameID", gameObj.getId()));
+			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+			// Execute HTTP Post Request
+			HttpResponse httpresponse = httpclient.execute(httppost);
+			HttpEntity responseEntity = httpresponse.getEntity();
+		} catch (ClientProtocolException e) {
+		} catch (IOException e) {
+		} catch (AuthenticationException e1) {
+			e1.printStackTrace();
+		}
+	}
+
+	private void joinGame() {
+		HttpClient httpclient = new DefaultHttpClient();
+		HttpPost httppost = new HttpPost(Constants.joinGame);
+		UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(
+				username, password);
+		BasicScheme scheme = new BasicScheme();
+		Header authorizationHeader;
+		try {
+			authorizationHeader = scheme.authenticate(credentials, httppost);
+			httppost.addHeader(authorizationHeader);
+
+			// Add data
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+			nameValuePairs
+					.add(new BasicNameValuePair("gameID", gameObj.getId()));
+			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+			// Execute HTTP Post Request
+			HttpResponse httpresponse = httpclient.execute(httppost);
+			HttpEntity responseEntity = httpresponse.getEntity();
+		} catch (ClientProtocolException e) {
+		} catch (IOException e) {
+		} catch (AuthenticationException e1) {
+			e1.printStackTrace();
+		}
 	}
 
 	private void updateInfo() {
-		Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				// TODO add call to get info for these fields.
-			}
-		});
-		thread.start();
-		try {
-			thread.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		if (gameObj.getOwner().equals(username)) {
+			join_start_Button.setText("Start the game.");
+		} else if (inGame()) {
+			join_start_Button.setText("Leave the game.");
+		} else {
+			join_start_Button.setText("Join the game.");
 		}
+		maxPotatoes.setText("unknown");// TODO
+		date.setText(String.valueOf(gameObj.getCreationDate()));
 	}
 
 	private void loadLV() {
-		HttpResponse response = null;
-		HttpEntity responseEntity = null;
-		try {
-			HttpClient client = new DefaultHttpClient();
-			HttpGet request = new HttpGet();
-			// TODO LINK + creds
-			request.setURI(new URI(
-					"http://mighty-sea-1005.herokuapp.com/players/alive"));
-			request.addHeader(BasicScheme.authenticate(
-					new UsernamePasswordCredentials("brittany", "yes"),
-					"UTF-8", false));
-			response = client.execute(request);
-			responseEntity = response.getEntity();
-
-			String content = EntityUtils.toString(responseEntity);
-
-			playerList = Arrays.asList(content.split("\\s*,\\s*"));
-
-			for (int x = 0; x < playerList.size(); x++) {
-				if (playerList.get(x).startsWith("\"userId\":")) {
-					System.out.println(playerList.get(x));
-					finalList.add(playerList.get(x).substring(10,
-							playerList.get(x).length() - 1));
-				} else {
-					System.out.println("not " + playerList.get(x));
-				}
-			}
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		for (int x = 0; x < gameObj.getPlayers().size(); x++) {
+			finalList.add(gameObj.getPlayers().get(x).getId());
 		}
 	}
-
 }

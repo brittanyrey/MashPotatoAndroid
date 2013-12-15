@@ -2,7 +2,10 @@ package edu.wm.mashpotato;
 
 import java.nio.charset.Charset;
 
+import edu.wm.mashpotato.accelerometer.SaveThePotatoActivity;
+
 import android.app.Activity;
+import android.content.Intent;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -15,6 +18,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.format.Time;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
@@ -26,6 +31,7 @@ OnNdefPushCompleteCallback {
 	private static final int MESSAGE_SENT = 1;
 	
 	private ViewFlipper viewFlipper;
+	private Button savePotato;
 	private float lastX;
 	
 	@Override
@@ -40,6 +46,17 @@ OnNdefPushCompleteCallback {
         mNfcAdapter.setOnNdefPushCompleteCallback(this, this);
         
         viewFlipper = (ViewFlipper) findViewById(R.id.ViewFlipper01);
+        savePotato = (Button) findViewById(R.id.saveThePotato);
+        
+        savePotato.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				System.out.println("SAVE THE POTATO. DO IT FOR THE CHILDRENNNNNN!!!!");
+				Intent intent = new Intent(getApplicationContext(),
+						SaveThePotatoActivity.class);
+				startActivity(intent);
+			}
+		});
+        
 //        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals( getIntent().getAction())) mNfcManager.processIntent(getIntent());
 	}
 	
