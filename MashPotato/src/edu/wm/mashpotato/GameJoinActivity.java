@@ -124,7 +124,6 @@ public class GameJoinActivity extends Activity {
 		}
 	}
 
-	//TODO DOES NOT WORK
 	private void leaveGame() {
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpPost httppost = new HttpPost(Constants.removePlayer);

@@ -332,9 +332,10 @@ public class SaveThePotatoActivity extends Activity {
 					(int) (value * 1000), 0));
 		}
 
+		@Override
 		public void caloriesChanged(float value) {
-			mHandler.sendMessage(mHandler.obtainMessage(CALORIES_MSG,
-					(int) (value), 0));
+			// TODO Auto-generated method stub
+			
 		}
 	};
 
@@ -342,7 +343,6 @@ public class SaveThePotatoActivity extends Activity {
 	private static final int PACE_MSG = 2;
 	private static final int DISTANCE_MSG = 3;
 	private static final int SPEED_MSG = 4;
-	private static final int CALORIES_MSG = 5;
 
 	private Handler mHandler = new Handler() {
 		@Override
@@ -377,14 +377,6 @@ public class SaveThePotatoActivity extends Activity {
 				} else {
 					mSpeedValueView.setText(("" + (mSpeedValue + 0.000001f))
 							.substring(0, 4));
-				}
-				break;
-			case CALORIES_MSG:
-				mCaloriesValue = msg.arg1;
-				if (mCaloriesValue <= 0) {
-					mCaloriesValueView.setText("0");
-				} else {
-					mCaloriesValueView.setText("" + (int) mCaloriesValue);
 				}
 				break;
 			default:

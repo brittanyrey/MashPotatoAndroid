@@ -39,6 +39,8 @@
     <string name="Reset">Refresh</string>
     <string name="joinThisGame">Join this game. </string>
     <string name="savePotato">Save the Potato!</string>
+    <string name="hasPotato">Has possession of potato: </string>
+    <string name="leaveGame">Leave current game.</string>
     
     <string name="notification_subtitle">Counting your steps</string>
 
