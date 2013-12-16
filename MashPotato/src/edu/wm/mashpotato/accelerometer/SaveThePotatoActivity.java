@@ -327,8 +327,8 @@ public class SaveThePotatoActivity extends Activity implements LocationListener 
 						mHandler.removeCallbacks(dynamicPoll);
 						mHandler.postDelayed(dynamicPoll, delay);
 					}
-					mStepValue = temp;
-					mStepValueView.setText("" + mStepValue);
+					//mStepValue = temp;
+					mStepValueView.setText("" + gameObj.getPotato().get(0).getTemp());
 				}
 				break;
 			default:
