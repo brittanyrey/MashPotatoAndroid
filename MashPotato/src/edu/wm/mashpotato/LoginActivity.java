@@ -1,6 +1,5 @@
 package edu.wm.mashpotato;
 
-
 import java.util.List;
 
 import org.apache.http.NameValuePair;
@@ -34,9 +33,9 @@ public class LoginActivity extends Activity {
 	private String password;
 	private boolean isAdmin;
 	private boolean clicked = false;
-	
+
 	private Game gameObj;
-	
+
 	private static final String TAG = "LoginActivity";
 
 	@Override
@@ -63,7 +62,7 @@ public class LoginActivity extends Activity {
 		loginButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				System.out.println("login");
-				if(!clicked){
+				if (!clicked) {
 					clicked = true;
 					attemptLogin();
 				}
@@ -83,7 +82,7 @@ public class LoginActivity extends Activity {
 		boolean cancel = false;
 		View focusView = null;
 		Log.v(TAG, password);
-		
+
 		// Check for a valid password.
 		if (TextUtils.isEmpty(password)) {
 			Log.v(TAG, "Empty password: " + password);
@@ -103,8 +102,10 @@ public class LoginActivity extends Activity {
 			// There was an error
 			focusView.requestFocus();
 		} else {
-			mAuthTask = new UserLoginTask(false, usernameText.getText().toString(), passwordText.getText().toString(), null, false, false);
-			mAuthTask.execute(new String[] {Constants.login});
+			mAuthTask = new UserLoginTask(false, usernameText.getText()
+					.toString(), passwordText.getText().toString(), null,
+					false, false);
+			mAuthTask.execute(new String[] { Constants.login });
 		}
 	}
 
@@ -114,10 +115,10 @@ public class LoginActivity extends Activity {
 	 */
 	public class UserLoginTask extends WebTask {
 		public UserLoginTask(boolean hasPairs, String username,
-				String password, List<NameValuePair> pairs, boolean isPost, boolean lobby) {
+				String password, List<NameValuePair> pairs, boolean isPost,
+				boolean lobby) {
 			super(hasPairs, username, password, pairs, isPost, lobby);
 		}
-
 
 		@Override
 		protected void onPostExecute(String result) {
@@ -126,26 +127,27 @@ public class LoginActivity extends Activity {
 			ResponseObject resp = new ResponseObject();
 			resp.success = false;
 			try {
-				resp = ResponseObject.createResponse(result, this.lobby, usernameText.getText().toString());
-				System.out.println("response: " + resp.success + " "+resp.game);
+				resp = ResponseObject.createResponse(result, this.lobby,
+						usernameText.getText().toString());
+				System.out.println("response: " + resp.success + " "
+						+ resp.game);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
 			if (resp.success) {
 				Intent intent = null;
-				if(inGame(resp)){
-				intent = new Intent(getApplicationContext(),
-						HomeScreenActivity.class);
-				}else{
-				intent = new Intent(getApplicationContext(),
-						InitGameActivity.class);	
+				if (!resp.me.getGame().equals("")) {
+					intent = new Intent(getApplicationContext(),
+							HomeScreenActivity.class);
+				} else {
+					intent = new Intent(getApplicationContext(),
+							InitGameActivity.class);
 				}
 				intent.putExtra(Constants.response, resp);
-				Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_SHORT).show();
-				intent.putExtra("username", usernameText.getText()
-						.toString());
-				intent.putExtra("password", passwordText.getText()
-						.toString());
+				Toast.makeText(getApplicationContext(), "Success!",
+						Toast.LENGTH_SHORT).show();
+				intent.putExtra("username", usernameText.getText().toString());
+				intent.putExtra("password", passwordText.getText().toString());
 				intent.putExtra("gameObj", gameObj);
 				finish();
 				startActivity(intent);
@@ -153,7 +155,8 @@ public class LoginActivity extends Activity {
 				passwordText
 						.setError(getString(R.string.error_incorrect_password));
 				passwordText.requestFocus();
-				Toast.makeText(getApplicationContext(), "Failed!", Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), "Failed!",
+						Toast.LENGTH_SHORT).show();
 			}
 		}
 
@@ -161,19 +164,6 @@ public class LoginActivity extends Activity {
 		protected void onCancelled() {
 			mAuthTask = null;
 		}
-	}
-	
-	private boolean inGame(ResponseObject rObj) {
-		gameObj = rObj.game;
-		//for (int y = 0; y < rObj.lobbyList.size(); y++){
-			for (int x = 0; x < rObj.game.getPlayers().size(); x++) {
-				if(rObj.game.getPlayers().get(x).getId().equals(username)) {
-					return true;
-				}
-			}
-		//}
-		
-		return false;
 	}
 
 }
