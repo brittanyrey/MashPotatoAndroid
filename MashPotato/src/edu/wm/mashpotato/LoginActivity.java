@@ -137,7 +137,7 @@ public class LoginActivity extends Activity {
 			}
 			if (resp.success) {
 				Intent intent = null;
-				if (!resp.me.getGame().equals("")) {
+				if (!resp.me.getGame().equals("") && resp.game.getState() == 1) {
 					intent = new Intent(getApplicationContext(),
 							HomeScreenActivity.class);
 				} else {

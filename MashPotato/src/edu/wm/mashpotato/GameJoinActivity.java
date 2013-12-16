@@ -281,7 +281,7 @@ public class GameJoinActivity extends Activity {
 					JoinActivity.class);
 			intent.putExtra("username", username);
 			intent.putExtra("password", password);
-			intent.putExtra("gameObj", resObj);
+			intent.putExtra("gameObj", loadJoinLV());
 			finish();
 			startActivity(intent);
 			return true;
@@ -289,7 +289,7 @@ public class GameJoinActivity extends Activity {
 		return super.onKeyDown(keyCode, event);
 	}
 
-	private void loadJoinLV() {
+	private ResponseObject loadJoinLV() {
 		System.out.println(username);
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpPost httppost = new HttpPost(Constants.gameLobby);
@@ -314,7 +314,8 @@ public class GameJoinActivity extends Activity {
 			String content = EntityUtils.toString(responseEntity);
 
 			resObj = ResponseObject.createResponse(content, false, username);
-			gameObj = resObj.game;
+			
+			return resObj; 
 
 		} catch (ClientProtocolException e) {
 		} catch (IOException e) {
@@ -323,5 +324,6 @@ public class GameJoinActivity extends Activity {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+		return null;
 	}
 }
