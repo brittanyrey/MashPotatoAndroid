@@ -118,8 +118,8 @@ public class StepService extends Service {
         IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
         registerReceiver(mReceiver, filter);
 
-     //   mStepDisplayer = new StepDisplayer(mPedometerSettings, mUtils);
-        mStepDisplayer.setSteps(mSteps = mState.getInt("steps", 0));
+        mStepDisplayer = new StepDisplayer( mUtils);
+        mStepDisplayer.setSteps(38);//TODO ADD CALL TO MAKE THIS ACCURATE  //mSteps = mState.getInt("steps", 0));
         mStepDisplayer.addListener(mStepListener);
         mStepDetector.addStepListener(mStepDisplayer);
 

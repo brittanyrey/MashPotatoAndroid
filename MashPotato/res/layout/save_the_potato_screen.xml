@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:textColor="@color/display_background"
         android:text="@string/t"
         android:textSize="120sp" />
@@ -29,24 +29,28 @@
         android:textSize="20sp" 
         android:layout_marginTop="5dp"/>
 
-    <ProgressBar
-        android:id="@+id/progressBar1"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="60dp"
-        android:layout_below="@+id/potatoTemp"
-        android:layout_marginTop="36dp" />
-    
      <TextView
         android:id="@+id/shake"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
+        android:layout_below = "@+id/potatoTemp"
+        android:layout_marginTop="25dp"
         android:text="@string/shake"
         android:textColor="@color/display_background"
         android:textAlignment="center"
         android:textSize="27sp" 
-        android:textStyle="italic"
-        android:layout_alignParentBottom="true"/>
+        android:textStyle="italic"/>
+     
+      <TextView
+        android:id="@+id/heat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below = "@+id/shake"
+        android:layout_centerHorizontal="true" 
+        android:text="@string/t"
+        android:textColor="@color/display_background"
+        android:textAlignment="center"
+        android:textSize="27sp" 
+        android:textStyle="italic"/>
 
 </RelativeLayout>

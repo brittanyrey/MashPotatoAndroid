@@ -13,7 +13,7 @@
     <string name="register">Register</string>
     <string name="login">Login</string>
     <string name="t">96</string>
-    <string name="shake">Shake the device to cool down the potato\'s temperature! \nYour fate is in your hand!</string>
+    <string name="shake">Shake the device to cool down the potato\'s temperature! \n\nThe potato\'s temperature is currently </string>
     <string name="maxGameTime">Set max round length (in minutes):</string>
     <string name="logout">Log Out</string>
     <string name="potatoTemperature">Potato Temperature</string>

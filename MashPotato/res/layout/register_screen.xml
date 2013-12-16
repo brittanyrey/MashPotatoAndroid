@@ -108,19 +108,14 @@
             android:src="@drawable/cube" />
     </LinearLayout>
 
-    <TableRow
-        android:id="@+id/tableRow6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
-
+   <RelativeLayout >
         <Button
             android:id="@+id/createButton"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_span="2"
-            android:layout_weight="1"
+            android:layout_alignParentBottom="true"
             android:text="@string/register" >
         </Button>
-    </TableRow>
-
+        </RelativeLayout>
+   
 </TableLayout>

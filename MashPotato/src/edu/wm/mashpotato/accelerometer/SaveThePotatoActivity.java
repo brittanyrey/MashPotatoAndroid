@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -36,13 +37,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class SaveThePotatoActivity extends Activity {
 	private static final String TAG = "Pedometer";
 	private SharedPreferences mSettings;
-//	private PedometerSettings mPedometerSettings;
+	// private PedometerSettings mPedometerSettings;
 	private Utils mUtils;
+	private ProgressBar pBar;
+	private TextView level;
 
 	private TextView mStepValueView;
 	private int mStepValue;
@@ -80,25 +84,45 @@ public class SaveThePotatoActivity extends Activity {
 		super.onResume();
 
 		mSettings = PreferenceManager.getDefaultSharedPreferences(this);
-		//mPedometerSettings = new PedometerSettings(mSettings);
+		// mPedometerSettings = new PedometerSettings(mSettings);
 
 		mUtils.setSpeak(mSettings.getBoolean("speak", false));
 
 		// Read from preferences if the service was running on the last onPause
-		//mIsRunning = mPedometerSettings.isServiceRunning();
+		// mIsRunning = mPedometerSettings.isServiceRunning();
 
 		// Start the service if this is considered to be an application start
 		// (last onPause was long ago)
-		if (!mIsRunning ){//&& mPedometerSettings.isNewStart()) {
+		if (!mIsRunning) {// && mPedometerSettings.isNewStart()) {
 			startStepService();
 			bindStepService();
 		} else if (mIsRunning) {
 			bindStepService();
 		}
 
-		/*mPedometerSettings.clearServiceRunning();*/
+		/* mPedometerSettings.clearServiceRunning(); */
 
 		mStepValueView = (TextView) findViewById(R.id.temp);
+		level = (TextView) findViewById(R.id.heat);
+
+		setLevel(mStepValue);
+	}
+
+	private void setLevel(int heat) {
+		long max = 100;
+		if (heat / max > .9) {
+			mStepValueView.setText("Very Hot");
+			mStepValueView.setTextColor(Color.RED);
+		} else if (heat / max > .75) {
+			mStepValueView.setText("Hot");
+			mStepValueView.setTextColor(Color.RED);
+		} else if (heat / max > .5) {
+			mStepValueView.setText("Warm");
+			mStepValueView.setTextColor(Color.MAGENTA);
+		} else {
+			mStepValueView.setText("Cool");
+			mStepValueView.setTextColor(Color.BLUE);
+		}
 	}
 
 	@Override
@@ -107,11 +131,12 @@ public class SaveThePotatoActivity extends Activity {
 		if (mIsRunning) {
 			unbindStepService();
 		}
-		/*if (mQuitting) {
-			mPedometerSettings.saveServiceRunningWithNullTimestamp(mIsRunning);
-		} else {
-			mPedometerSettings.saveServiceRunningWithTimestamp(mIsRunning);
-		}*/
+		/*
+		 * if (mQuitting) {
+		 * mPedometerSettings.saveServiceRunningWithNullTimestamp(mIsRunning); }
+		 * else {
+		 * mPedometerSettings.saveServiceRunningWithTimestamp(mIsRunning); }
+		 */
 
 		super.onPause();
 	}
@@ -206,30 +231,20 @@ public class SaveThePotatoActivity extends Activity {
 	private static final int MENU_RESUME = 2;
 	private static final int MENU_RESET = 3;
 
-	/* Creates the menu items 
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		menu.clear();
-		if (mIsRunning) {
-			menu.add(0, MENU_PAUSE, 0, R.string.pause)
-					.setIcon(android.R.drawable.ic_media_pause)
-					.setShortcut('1', 'p');
-		} else {
-			menu.add(0, MENU_RESUME, 0, R.string.resume)
-					.setIcon(android.R.drawable.ic_media_play)
-					.setShortcut('1', 'p');
-		}
-		menu.add(0, MENU_RESET, 0, R.string.reset)
-				.setIcon(android.R.drawable.ic_menu_close_clear_cancel)
-				.setShortcut('2', 'r');
-		menu.add(0, MENU_SETTINGS, 0, R.string.settings)
-				.setIcon(android.R.drawable.ic_menu_preferences)
-				.setShortcut('8', 's')
-				.setIntent(new Intent(this, Settings.class));
-		menu.add(0, MENU_QUIT, 0, R.string.quit)
-				.setIcon(android.R.drawable.ic_lock_power_off)
-				.setShortcut('9', 'q');
-		return true;
-	}*/
+	/*
+	 * Creates the menu items public boolean onPrepareOptionsMenu(Menu menu) {
+	 * menu.clear(); if (mIsRunning) { menu.add(0, MENU_PAUSE, 0,
+	 * R.string.pause) .setIcon(android.R.drawable.ic_media_pause)
+	 * .setShortcut('1', 'p'); } else { menu.add(0, MENU_RESUME, 0,
+	 * R.string.resume) .setIcon(android.R.drawable.ic_media_play)
+	 * .setShortcut('1', 'p'); } menu.add(0, MENU_RESET, 0, R.string.reset)
+	 * .setIcon(android.R.drawable.ic_menu_close_clear_cancel) .setShortcut('2',
+	 * 'r'); menu.add(0, MENU_SETTINGS, 0, R.string.settings)
+	 * .setIcon(android.R.drawable.ic_menu_preferences) .setShortcut('8', 's')
+	 * .setIntent(new Intent(this, Settings.class)); menu.add(0, MENU_QUIT, 0,
+	 * R.string.quit) .setIcon(android.R.drawable.ic_lock_power_off)
+	 * .setShortcut('9', 'q'); return true; }
+	 */
 
 	/* Handles item selections */
 	public boolean onOptionsItemSelected(MenuItem item) {
