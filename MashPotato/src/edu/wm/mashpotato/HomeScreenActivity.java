@@ -444,6 +444,7 @@ public class HomeScreenActivity extends Activity
       savedInstanceState.putString("username", username);
       savedInstanceState.putString("password", password);
       savedInstanceState.putSerializable("gameObj", gameObj);
+      savedInstanceState.putSerializable("player", player);
       // etc.
     }
     
@@ -456,6 +457,7 @@ public class HomeScreenActivity extends Activity
     	intent.putExtra("username", username);
     	intent.putExtra("password", password);
     	intent.putExtra("gameObj", gameObj);
+    	intent.putExtra("player", player);
         setIntent(intent);
     }
 
@@ -515,6 +517,7 @@ public class HomeScreenActivity extends Activity
 				intent.putExtra("username", username);
 				intent.putExtra("password", password);
 				intent.putExtra("gameObj", gameObj);
+				intent.putExtra("player", player);
 				finish();
 				startActivity(intent);
 			} 
