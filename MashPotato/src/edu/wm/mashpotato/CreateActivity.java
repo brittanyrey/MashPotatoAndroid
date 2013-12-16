@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.auth.AuthenticationException;
@@ -16,6 +17,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 
 import edu.wm.mashpotato.web.Constants;
@@ -42,6 +44,7 @@ public class CreateActivity extends Activity {
 	private CheckBox gems;
 
 	private ResponseObject resObj;
+	private ResponseObject joinObj;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +69,7 @@ public class CreateActivity extends Activity {
 					@Override
 					public void run() {
 						createGame();
+						loadLV();
 					}
 				});
 				thread.start();
@@ -76,19 +80,18 @@ public class CreateActivity extends Activity {
 					e.printStackTrace();
 				}
 
-				if (resObj.success) {
-					System.out.println("join a game");
-					Intent intent = new Intent(getApplicationContext(),
-							JoinActivity.class);
-					intent.putExtra("gameObj", resObj);
-					intent.putExtra("username", username);
-					intent.putExtra("password", password);
-					finish();
-					startActivity(intent);
-				} else {
-					// TODO error msg
-				}
-			}
+				// if (resObj.success) {
+				System.out.println("join a game");
+				Intent intent = new Intent(getApplicationContext(),
+						JoinActivity.class);
+				intent.putExtra("gameObj", joinObj);
+				intent.putExtra("username", username);
+				intent.putExtra("password", password);
+				finish();
+				startActivity(intent);
+				/*
+				 * } else { // TODO error msg }
+				 */}
 		});
 	}
 
@@ -141,6 +144,42 @@ public class CreateActivity extends Activity {
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
+	}
+
+	private void loadLV() {
+		System.out.println(username);
+		HttpClient httpclient = new DefaultHttpClient();
+		HttpPost httppost = new HttpPost(Constants.gameLobby);
+		UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(
+				username, password);
+		BasicScheme scheme = new BasicScheme();
+		Header authorizationHeader;
+		try {
+			authorizationHeader = scheme.authenticate(credentials, httppost);
+			httppost.addHeader(authorizationHeader);
+
+			// Add data
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+			nameValuePairs.add(new BasicNameValuePair("lat", "0"));
+			nameValuePairs.add(new BasicNameValuePair("lng", "0"));
+			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+			// Execute HTTP Post Request
+			HttpResponse httpresponse = httpclient.execute(httppost);
+			HttpEntity responseEntity = httpresponse.getEntity();
+
+			String content = EntityUtils.toString(responseEntity);
+
+			joinObj = ResponseObject.createResponse(content, true, username);
+
+		} catch (ClientProtocolException e) {
+		} catch (IOException e) {
+		} catch (AuthenticationException e1) {
+			e1.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

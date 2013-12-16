@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.http.Header;
@@ -95,14 +96,19 @@ public class JoinActivity extends Activity {
 
 	private void initialLoadLV() {
 		for (int x = 0; x < resObj.lobbyList.size(); x++) {
-			finalList.add(resObj.lobbyList.get(x).getId());
+			Date date = new Date();
+			date.setTime(resObj.lobbyList.get(x).getCreationDate());
+			finalList.add(resObj.lobbyList.get(x).getOwner()+ " " + date.toString());
 		}
 
 	}
 
 	private Game findGame(String id) {
 		for (int x = 0; x < resObj.lobbyList.size(); x++) {
-			if (resObj.lobbyList.get(x).getId().equals(id)) {
+			Date date = new Date();
+			date.setTime(resObj.lobbyList.get(x).getCreationDate());
+			String line = (resObj.lobbyList.get(x).getOwner()+ " " + date.toString());
+			if (line.equals(id)) {
 				return resObj.lobbyList.get(x);
 			}
 		}

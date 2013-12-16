@@ -425,7 +425,6 @@ public class HomeScreenActivity extends Activity implements
 	/**
 	 * Implementation for the OnNdefPushCompleteCallback interface
 	 */
-	@Override
 	public void onNdefPushComplete(NfcEvent arg0) {
 		// A handler is needed to send messages to the activity when this
 		// callback occurs, because it happens from a binder thread
@@ -706,7 +705,7 @@ public class HomeScreenActivity extends Activity implements
 			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 			if (player.isHasString()) {
 				pairs.add(new BasicNameValuePair(Constants.potatoId, player
-						.getPotatoList().get(0)));
+						.getPotatoList().get(0)+""));
 				pairs.add(new BasicNameValuePair(Constants.temp, gameObj
 						.getPotato().get(0).getTemp()
 						+ ""));

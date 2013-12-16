@@ -23,10 +23,14 @@ import org.json.JSONException;
 import edu.wm.mashpotato.web.Constants;
 import edu.wm.mashpotato.web.ResponseObject;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 public class InitGameActivity extends Activity {
 
@@ -58,12 +62,13 @@ public class InitGameActivity extends Activity {
 		createGameButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				System.out.println("create a game");
-				Intent intent = new Intent(getApplicationContext(),
-						CreateActivity.class);
-				intent.putExtra("username", username.toString());
-				intent.putExtra("password", password.toString());
-				finish();
-				startActivity(intent);
+
+				 Intent intent = new Intent(getApplicationContext(),
+				 CreateActivity.class);
+				 intent.putExtra("username", username.toString());
+				 intent.putExtra("password", password.toString());
+				 finish();
+				 startActivity(intent);
 			}
 		});
 

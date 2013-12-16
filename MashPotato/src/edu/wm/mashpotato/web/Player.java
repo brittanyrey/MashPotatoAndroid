@@ -4,6 +4,33 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Player implements Serializable {
+	private String id;
+	private boolean isOut;
+	public double lat;
+	public double lng;
+	private String userId;
+	private boolean hasString;
+	private int score;
+	private String game;
+	private List<String> itemList;
+	private List<String> potatoList;
+
+	public Player(String id, boolean isOut, double lat, double lng,
+			String userId, boolean hasString, int score, String game,
+			List<String> itemList, List<String> potatoList) {
+		super();
+		this.id = id;
+		this.isOut = isOut;
+		this.lat = lat;
+		this.lng = lng;
+		this.userId = userId;
+		this.hasString = hasString;
+		this.score = score;
+		this.game = game;
+		this.itemList = itemList;
+		this.potatoList = potatoList;
+	}
+	
 	public String getId() {
 		return id;
 	}
@@ -83,31 +110,4 @@ public class Player implements Serializable {
 	public void setPotatoList(List<String> potatoList) {
 		this.potatoList = potatoList;
 	}
-
-	public Player(String id, boolean isOut, double lat, double lng,
-			String userId, boolean hasString, int score, String game,
-			List<String> itemList, List<String> potatoList) {
-		super();
-		this.id = id;
-		this.isOut = isOut;
-		this.lat = lat;
-		this.lng = lng;
-		this.userId = userId;
-		this.hasString = hasString;
-		this.score = score;
-		this.game = game;
-		this.itemList = itemList;
-		this.potatoList = potatoList;
-	}
-
-	private String id;
-	private boolean isOut;
-	public double lat;
-	public double lng;
-	private String userId;
-	private boolean hasString;
-	private int score;
-	private String game;
-	private List<String> itemList;
-	private List<String> potatoList;
 }
