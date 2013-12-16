@@ -77,8 +77,10 @@ public class Potato  implements Serializable{
     private long holding;
     
     public int changeTemp(int steps){
+    	long d = new Date().getTime();
+    	long e = (d - creationDate) * 100 / lifeSpan;
     	steps = steps / 10;
-    	temp = temp - steps % 10;
+    	temp = temp - steps % 10 + (int)e;
     	if(temp < 0){
     		temp = 0;
     	}else if(temp > 100){
