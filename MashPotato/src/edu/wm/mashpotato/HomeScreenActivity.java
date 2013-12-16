@@ -25,10 +25,15 @@ import org.json.JSONException;
 import edu.wm.mashpotato.accelerometer.SaveThePotatoActivity;
 import edu.wm.mashpotato.web.Constants;
 import edu.wm.mashpotato.web.Game;
+import edu.wm.mashpotato.web.Player;
 import edu.wm.mashpotato.web.ResponseObject;
+import edu.wm.mashpotato.web.WebTask;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.IntentFilter.MalformedMimeTypeException;
 import android.graphics.Color;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.PorterDuff;
@@ -42,7 +47,9 @@ import android.nfc.NfcManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcelable;
 import android.text.format.Time;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -54,12 +61,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-public class HomeScreenActivity extends Activity {
-	// implements CreateNdefMessageCallback, OnNdefPushCompleteCallback {
-	// NfcAdapter mNfcAdapter;
+public class HomeScreenActivity extends Activity
+	 implements CreateNdefMessageCallback, OnNdefPushCompleteCallback {
+	 NfcAdapter mNfcAdapter;
 	// NfcManager mNfcManager;
 
 	private static final int MESSAGE_SENT = 1;
+
+	private static final String TAG = "HomeScreenActivity";
 
 	private ViewFlipper viewFlipper;
 	private float lastX;
@@ -78,23 +87,32 @@ public class HomeScreenActivity extends Activity {
 	private ImageView icon;
 	private Button leaveGame;
 
-	private String username;
-	private String password;
-	private Game gameObj;
+	private static String username;
+	private static String password;
+	private static Game gameObj;
 
 	private ArrayList<String> finalList;
+
+	private IntentFilter[] intentFiltersArray;
+	private Activity why;
+	private IntentFilter ndef;
+	private PendingIntent pendingIntent;
+
+	private Player player;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.home_screen);
-
+		why = this;
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 			username = extras.getString("username");
 			password = extras.getString("password");
 			gameObj = (Game) extras.get("gameObj");
+			player = (Player) extras.get("player");
 		}
+		Log.i(TAG, "OnNewIntent: " + username + " password: " + password + " gameObj: " + gameObj);
 
 		finalList = new ArrayList<String>();
 		viewFlipper = (ViewFlipper) findViewById(R.id.ViewFlipper01);
@@ -120,16 +138,31 @@ public class HomeScreenActivity extends Activity {
 		stats.setBackgroundResource(R.drawable.info);
 		stats.setColorFilter(new PorterDuffColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY));
 
-		/*
-		 * mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
-		 * 
-		 * // Register callback to set NDEF message
-		 * mNfcAdapter.setNdefPushMessageCallback(this, this); // Register
-		 * callback to listen for message-sent success
-		 * mNfcAdapter.setOnNdefPushCompleteCallback(this, this);
-		 */
-		// if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(
-		// getIntent().getAction())) mNfcManager.processIntent(getIntent());
+		
+		  mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
+		  if(player.isHasString()){
+			  mNfcAdapter.setNdefPushMessageCallback(this, this);
+			  mNfcAdapter.setOnNdefPushCompleteCallback(this, this);
+			  Log.i(TAG, "I have a potato!");
+		  }else{
+			  mNfcAdapter.setNdefPushMessageCallback(null, this);
+			  Log.i(TAG, "No potato!");
+		  }
+//        mNfcAdapter.disableForegroundNdefPush(this);
+        // Register callback to listen for message-sent success
+		
+        
+        pendingIntent = PendingIntent.getActivity(
+        	    this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+        ndef = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
+        try {
+            ndef.addDataType("*/*");    /* Handles all MIME based dispatches.
+                                           You should specify only the ones that you need. */
+        }
+        catch (MalformedMimeTypeException e) {
+            throw new RuntimeException("fail", e);
+        }
+       intentFiltersArray = new IntentFilter[] {ndef, };
 
 		leaveGame.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
@@ -307,46 +340,187 @@ public class HomeScreenActivity extends Activity {
 		return false;
 	}
 
-	/*
-	 * @Override public void onNdefPushComplete(NfcEvent arg0) { // A handler is
-	 * needed to send messages to the activity when this // callback occurs,
-	 * because it happens from a binder thread
-	 * mHandler.obtainMessage(MESSAGE_SENT).sendToTarget();
-	 * 
-	 * }
-	 * 
-	 * @Override public NdefMessage createNdefMessage(NfcEvent arg0) { Time time
-	 * = new Time(); time.setToNow(); String text = ("Beam me up!\n\n" +
-	 * "Beam Time: " + time .format("%H:%M:%S")); NdefMessage msg = new
-	 * NdefMessage(new NdefRecord[] { createMimeRecord(
-	 * "application/edu.wm.mashpotato", text.getBytes())
-	 *//**
-	 * The Android Application Record (AAR) is commented out. When a device
-	 * receives a push with an AAR in it, the application specified in the AAR
-	 * is guaranteed to run. The AAR overrides the tag dispatch system. You can
-	 * add it back in to guarantee that this activity starts when receiving a
-	 * beamed message. For now, this code uses the tag dispatch system.
-	 */
-	/*
-	 * // ,NdefRecord.createApplicationRecord("com.example.android.beam") });
-	 * return msg; }
-	 *//**
-	 * Creates a custom MIME type encapsulated in an NDEF record
-	 * 
-	 * @param mimeType
-	 */
-	/*
-	 * public NdefRecord createMimeRecord(String mimeType, byte[] payload) {
-	 * byte[] mimeBytes = mimeType.getBytes(Charset.forName("US-ASCII"));
-	 * NdefRecord mimeRecord = new NdefRecord(NdefRecord.TNF_MIME_MEDIA,
-	 * mimeBytes, new byte[0], payload); return mimeRecord; }
-	 *//** This handler receives a message from onNdefPushComplete */
-	/*
-	 * private final Handler mHandler = new Handler() {
-	 * 
-	 * @Override public void handleMessage(Message msg) { switch (msg.what) {
-	 * case MESSAGE_SENT: Toast.makeText(getApplicationContext(),
-	 * "Potato passed!", Toast.LENGTH_LONG).show(); break; } } };
-	 */
+    /**
+     * Implementation for the CreateNdefMessageCallback interface
+     */
+    @Override
+    public NdefMessage createNdefMessage(NfcEvent event) {
+        Time time = new Time();
+        time.setToNow();
+        String text = ("" +
+                player.getId()+" "+gameObj.getPotato().get(0).getpId());
+        NdefMessage msg = new NdefMessage(
+                new NdefRecord[] { createMimeRecord(
+                        "application/edu.wm.mashpotato", text.getBytes())
+                        
+         /**
+          * The Android Application Record (AAR) is commented out. When a device
+          * receives a push with an AAR in it, the application specified in the AAR
+          * is guaranteed to run. The AAR overrides the tag dispatch system.
+          * You can add it back in to guarantee that this
+          * activity starts when receiving a beamed message. For now, this code
+          * uses the tag dispatch system.
+          */
+          //,NdefRecord.createApplicationRecord("com.example.android.beam")
+        });
+        return msg;
+    }
 
+    /**
+     * Implementation for the OnNdefPushCompleteCallback interface
+     */
+    @Override
+    public void onNdefPushComplete(NfcEvent arg0) {
+        // A handler is needed to send messages to the activity when this
+        // callback occurs, because it happens from a binder thread
+        mHandler.obtainMessage(MESSAGE_SENT).sendToTarget();
+    }
+
+    /** This handler receives a message from onNdefPushComplete */
+    private final Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+            case MESSAGE_SENT:
+            	mNfcAdapter.setNdefPushMessageCallback(null, why);
+  			  	Log.i(TAG, "No potato!");
+            	player.setHasString(false);
+            	List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+				pairs.add(new BasicNameValuePair(Constants.potatoId, ""));
+				pairs.add(new BasicNameValuePair(Constants.holder, usernameText.getText()
+						.toString()));
+				pairs.add(new BasicNameValuePair(Constants.score, player.getScore()+""));
+				pairs.add(new BasicNameValuePair(Constants.temp, 0+""));
+				pairs.add(new BasicNameValuePair(Constants.lat, player.getLat()+""));
+				pairs.add(new BasicNameValuePair(Constants.lng, player.getLng()+""));
+				
+            	UserLoginTask task = new UserLoginTask(true, username, password, pairs, true, false);
+            	task.execute(Constants.updatePlayerInfo);
+                Toast.makeText(getApplicationContext(), "Potato passed!", Toast.LENGTH_LONG).show();
+                break;
+            }
+        }
+    };
+    
+    /**
+     * Creates a custom MIME type encapsulated in an NDEF record
+     *
+     * @param mimeType
+     */
+    public NdefRecord createMimeRecord(String mimeType, byte[] payload) {
+        byte[] mimeBytes = mimeType.getBytes(Charset.forName("US-ASCII"));
+        NdefRecord mimeRecord = new NdefRecord(
+                NdefRecord.TNF_MIME_MEDIA, mimeBytes, new byte[0], payload);
+        return mimeRecord;
+    }
+    
+    @Override
+    public void onResume() {
+        super.onResume();
+        mNfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFiltersArray, null);
+
+        Log.i(TAG, "OnResume: " + username + " password: " + password + " gameObj: " + gameObj);
+        // Check to see that the Activity started due to an Android Beam
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
+            processIntent(getIntent());
+        }
+    }
+    
+    @Override
+    public void onPause() {
+        super.onPause();
+        mNfcAdapter.disableForegroundDispatch(this);
+        Log.i(TAG, "ONPUASE " + username + " password: " + password + " gameObj: " + gameObj);
+    }
+    
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+      super.onSaveInstanceState(savedInstanceState);
+      // Save UI state changes to the savedInstanceState.
+      // This bundle will be passed to onCreate if the process is
+      // killed and restarted.
+      Log.i(TAG, "SAVEDINSTANCESTATE: " + username + " password: " + password + " gameObj: " + gameObj);
+
+      savedInstanceState.putString("username", username);
+      savedInstanceState.putString("password", password);
+      savedInstanceState.putSerializable("gameObj", gameObj);
+      savedInstanceState.putSerializable("player", player);
+      // etc.
+    }
+    
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        // onResume gets called after this to handle the intent
+    	Log.i(TAG, "OnNewIntent: " + username + " password: " + password + " gameObj: " + gameObj);
+    	
+    	intent.putExtra("username", username);
+    	intent.putExtra("password", password);
+    	intent.putExtra("gameObj", gameObj);
+    	intent.putExtra("player", player);
+        setIntent(intent);
+    }
+
+    /**
+     * Parses the NDEF Message from the intent and prints to the TextView
+     */
+    void processIntent(Intent intent) {
+        Parcelable[] rawMsgs = intent.getParcelableArrayExtra(
+                NfcAdapter.EXTRA_NDEF_MESSAGES);
+        // only one message sent during the beam
+        NdefMessage msg = (NdefMessage) rawMsgs[0];
+        // record 0 contains the MIME type, record 1 is the AAR, if present
+        Toast.makeText(getApplicationContext(), new String(msg.getRecords()[0].getPayload()), Toast.LENGTH_SHORT).show();
+//        mInfoText.setText(new String(msg.getRecords()[0].getPayload()));
+        String results = new String(msg.getRecords()[0].getPayload());
+        String[] arr = results.split(" ");
+        player.setHasString(true);
+        List<String> potatoList = new ArrayList<String>();
+        potatoList.add(arr[1]);
+        player.setPotatoList(potatoList);
+        List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+		pairs.add(new BasicNameValuePair(Constants.potatoId, arr[1]));
+		pairs.add(new BasicNameValuePair(Constants.holder, arr[0]));
+		pairs.add(new BasicNameValuePair(Constants.score, player.getScore()+""));
+		pairs.add(new BasicNameValuePair(Constants.temp, 0+""));
+		pairs.add(new BasicNameValuePair(Constants.lat, player.getLat()+""));
+		pairs.add(new BasicNameValuePair(Constants.lng, player.getLng()+""));
+		
+    	UserLoginTask task = new UserLoginTask(true, username, password, pairs, true, false);
+    	task.execute(Constants.updatePlayerInfo);
+        Toast.makeText(getApplicationContext(), "Potato passed!", Toast.LENGTH_LONG).show();
+    }
+    
+    
+    public class UserLoginTask extends WebTask {
+		public UserLoginTask(boolean hasPairs, String username,
+				String password, List<NameValuePair> pairs, boolean isPost, boolean lobby) {
+			super(hasPairs, username, password, pairs, isPost, lobby);
+		}
+
+
+		@Override
+		protected void onPostExecute(String result) {
+			ResponseObject resp = new ResponseObject();
+			resp.success = false;
+			try {
+				resp = ResponseObject.createResponse(result, this.lobby, usernameText.getText().toString());
+				System.out.println("response: " + resp.success + " "+resp.game);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			if (resp.success) {
+				Intent intent = null;
+				intent = new Intent(getApplicationContext(), HomeScreenActivity.class);
+				intent.putExtra(Constants.response, resp);
+				Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_SHORT).show();
+				intent.putExtra("username", username);
+				intent.putExtra("password", password);
+				intent.putExtra("gameObj", gameObj);
+				intent.putExtra("player", player);
+				finish();
+				startActivity(intent);
+			} 
+		}
+	}
 }
