@@ -7,6 +7,7 @@ import org.json.JSONException;
 
 import edu.wm.mashpotato.web.Constants;
 import edu.wm.mashpotato.web.Game;
+import edu.wm.mashpotato.web.Player;
 import edu.wm.mashpotato.web.ResponseObject;
 import edu.wm.mashpotato.web.WebTask;
 import android.app.Activity;
@@ -143,12 +144,15 @@ public class LoginActivity extends Activity {
 					intent = new Intent(getApplicationContext(),
 							InitGameActivity.class);
 				}
+				gameObj = resp.game;
+				Player p = resp.me;
 				intent.putExtra(Constants.response, resp);
 				Toast.makeText(getApplicationContext(), "Success!",
 						Toast.LENGTH_SHORT).show();
 				intent.putExtra("username", usernameText.getText().toString());
 				intent.putExtra("password", passwordText.getText().toString());
 				intent.putExtra("gameObj", gameObj);
+				intent.putExtra("player", p);
 				finish();
 				startActivity(intent);
 			} else {

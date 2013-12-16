@@ -25,6 +25,7 @@ import org.json.JSONException;
 import edu.wm.mashpotato.accelerometer.SaveThePotatoActivity;
 import edu.wm.mashpotato.web.Constants;
 import edu.wm.mashpotato.web.Game;
+import edu.wm.mashpotato.web.Player;
 import edu.wm.mashpotato.web.ResponseObject;
 import edu.wm.mashpotato.web.WebTask;
 
@@ -97,6 +98,8 @@ public class HomeScreenActivity extends Activity
 	private IntentFilter ndef;
 	private PendingIntent pendingIntent;
 
+	private Player player;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -107,6 +110,7 @@ public class HomeScreenActivity extends Activity
 			username = extras.getString("username");
 			password = extras.getString("password");
 			gameObj = (Game) extras.get("gameObj");
+			player = (Player) extras.get("player");
 		}
 		Log.i(TAG, "OnNewIntent: " + username + " password: " + password + " gameObj: " + gameObj);
 
@@ -136,10 +140,18 @@ public class HomeScreenActivity extends Activity
 
 		
 		  mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
-		  mNfcAdapter.setNdefPushMessageCallback(this, this);
+		  if(player.isHasString()){
+			  mNfcAdapter.setNdefPushMessageCallback(this, this);
+			  mNfcAdapter.setOnNdefPushCompleteCallback(this, this);
+			  Log.i(TAG, "I have a potato!");
+		  }else{
+			  mNfcAdapter.setNdefPushMessageCallback(null, this);
+			  Log.i(TAG, "No potato!");
+		  }
 //        mNfcAdapter.disableForegroundNdefPush(this);
         // Register callback to listen for message-sent success
-        mNfcAdapter.setOnNdefPushCompleteCallback(this, this);
+		
+        
         pendingIntent = PendingIntent.getActivity(
         	    this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
         ndef = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
@@ -335,7 +347,7 @@ public class HomeScreenActivity extends Activity
     public NdefMessage createNdefMessage(NfcEvent event) {
         Time time = new Time();
         time.setToNow();
-        String text = ("Beam me up!\n\n" +
+        String text = ("" +
                 "Beam Time: " + time.format("%H:%M:%S"));
         NdefMessage msg = new NdefMessage(
                 new NdefRecord[] { createMimeRecord(
