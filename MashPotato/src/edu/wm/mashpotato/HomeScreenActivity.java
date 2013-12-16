@@ -94,7 +94,7 @@ public class HomeScreenActivity extends Activity
 	private ArrayList<String> finalList;
 
 	private IntentFilter[] intentFiltersArray;
-
+	private Activity why;
 	private IntentFilter ndef;
 	private PendingIntent pendingIntent;
 
@@ -104,7 +104,7 @@ public class HomeScreenActivity extends Activity
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.home_screen);
-
+		why = this;
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 			username = extras.getString("username");
@@ -348,10 +348,11 @@ public class HomeScreenActivity extends Activity
         Time time = new Time();
         time.setToNow();
         String text = ("" +
-                "Beam Time: " + time.format("%H:%M:%S"));
+                player.getId()+" "+gameObj.getPotato().get(0).getpId());
         NdefMessage msg = new NdefMessage(
                 new NdefRecord[] { createMimeRecord(
                         "application/edu.wm.mashpotato", text.getBytes())
+                        
          /**
           * The Android Application Record (AAR) is commented out. When a device
           * receives a push with an AAR in it, the application specified in the AAR
@@ -381,7 +382,21 @@ public class HomeScreenActivity extends Activity
         public void handleMessage(Message msg) {
             switch (msg.what) {
             case MESSAGE_SENT:
-                Toast.makeText(getApplicationContext(), "Message sent!", Toast.LENGTH_LONG).show();
+            	mNfcAdapter.setNdefPushMessageCallback(null, why);
+  			  	Log.i(TAG, "No potato!");
+            	player.setHasString(false);
+            	List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+				pairs.add(new BasicNameValuePair(Constants.potatoId, ""));
+				pairs.add(new BasicNameValuePair(Constants.holder, usernameText.getText()
+						.toString()));
+				pairs.add(new BasicNameValuePair(Constants.score, player.getScore()+""));
+				pairs.add(new BasicNameValuePair(Constants.temp, 0+""));
+				pairs.add(new BasicNameValuePair(Constants.lat, player.getLat()+""));
+				pairs.add(new BasicNameValuePair(Constants.lng, player.getLng()+""));
+				
+            	UserLoginTask task = new UserLoginTask(true, username, password, pairs, true, false);
+            	task.execute(Constants.updatePlayerInfo);
+                Toast.makeText(getApplicationContext(), "Potato passed!", Toast.LENGTH_LONG).show();
                 break;
             }
         }
@@ -453,7 +468,25 @@ public class HomeScreenActivity extends Activity
         // only one message sent during the beam
         NdefMessage msg = (NdefMessage) rawMsgs[0];
         // record 0 contains the MIME type, record 1 is the AAR, if present
+        Toast.makeText(getApplicationContext(), new String(msg.getRecords()[0].getPayload()), Toast.LENGTH_SHORT).show();
 //        mInfoText.setText(new String(msg.getRecords()[0].getPayload()));
+        String results = new String(msg.getRecords()[0].getPayload());
+        String[] arr = results.split(" ");
+        player.setHasString(true);
+        List<String> potatoList = new ArrayList<String>();
+        potatoList.add(arr[1]);
+        player.setPotatoList(potatoList);
+        List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+		pairs.add(new BasicNameValuePair(Constants.potatoId, arr[1]));
+		pairs.add(new BasicNameValuePair(Constants.holder, arr[0]));
+		pairs.add(new BasicNameValuePair(Constants.score, player.getScore()+""));
+		pairs.add(new BasicNameValuePair(Constants.temp, 0+""));
+		pairs.add(new BasicNameValuePair(Constants.lat, player.getLat()+""));
+		pairs.add(new BasicNameValuePair(Constants.lng, player.getLng()+""));
+		
+    	UserLoginTask task = new UserLoginTask(true, username, password, pairs, true, false);
+    	task.execute(Constants.updatePlayerInfo);
+        Toast.makeText(getApplicationContext(), "Potato passed!", Toast.LENGTH_LONG).show();
     }
     
     
@@ -476,6 +509,7 @@ public class HomeScreenActivity extends Activity
 			}
 			if (resp.success) {
 				Intent intent = null;
+				intent = new Intent(getApplicationContext(), HomeScreenActivity.class);
 				intent.putExtra(Constants.response, resp);
 				Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_SHORT).show();
 				intent.putExtra("username", username);

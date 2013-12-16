@@ -7,7 +7,7 @@ public class Potato  implements Serializable{
     private String pId;
     private int multiplier;   
     
-	public Potato(String pId, int multiplier, long creationDate, Player holder,
+	public Potato(String pId, int multiplier, long creationDate, String holder,
 			int lifeSpan, String gameID, int temp, double[] loc, long holding) {
 		super();
 		this.pId = pId;
@@ -38,10 +38,10 @@ public class Potato  implements Serializable{
 	public void setCreationDate(long creationDate) {
 		this.creationDate = creationDate;
 	}
-	public Player getHolder() {
+	public String getHolder() {
 		return holder;
 	}
-	public void setHolder(Player holder) {
+	public void setHolder(String holder) {
 		this.holder = holder;
 	}
 	public int getLifeSpan() {
@@ -69,7 +69,7 @@ public class Potato  implements Serializable{
 		this.loc = loc;
 	}
 	private long creationDate;
-    private Player holder;
+    private String holder;
     private int lifeSpan;
     private String gameID;
     private int temp;
