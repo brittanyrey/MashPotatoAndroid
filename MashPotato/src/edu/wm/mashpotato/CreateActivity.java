@@ -16,8 +16,10 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
 
 import edu.wm.mashpotato.web.Constants;
+import edu.wm.mashpotato.web.ResponseObject;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -38,6 +40,8 @@ public class CreateActivity extends Activity {
 	private EditText numPotatoes;
 	private EditText maxRoundLength;
 	private CheckBox gems;
+
+	private ResponseObject resObj;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +65,7 @@ public class CreateActivity extends Activity {
 				Thread thread = new Thread(new Runnable() {
 					@Override
 					public void run() {
-						 createGame();
+						createGame();
 					}
 				});
 				thread.start();
@@ -72,11 +76,11 @@ public class CreateActivity extends Activity {
 					e.printStackTrace();
 				}
 
-				if (true) // TODO response = success
-				{
+				if (resObj.success) {
 					System.out.println("join a game");
 					Intent intent = new Intent(getApplicationContext(),
 							JoinActivity.class);
+					intent.putExtra("gameObj", resObj);
 					intent.putExtra("username", username);
 					intent.putExtra("password", password);
 					finish();
@@ -89,7 +93,7 @@ public class CreateActivity extends Activity {
 	}
 
 	private void createGame() {
-		System.out.println(username +" "+ password);
+		System.out.println(username + " " + password);
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpPost httppost = new HttpPost(Constants.newGame);
 		UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(
@@ -102,9 +106,9 @@ public class CreateActivity extends Activity {
 
 			// Add data
 			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-			String time = String.valueOf(Integer.parseInt(maxRoundLength.getText().toString()) * 60000);
-			nameValuePairs.add(new BasicNameValuePair("lifeSpan",
-					time));
+			String time = String.valueOf(Integer.parseInt(maxRoundLength
+					.getText().toString()) * 60000);
+			nameValuePairs.add(new BasicNameValuePair("lifeSpan", time));
 			nameValuePairs.add(new BasicNameValuePair("lat", "0"));
 			nameValuePairs.add(new BasicNameValuePair("lng", "0"));
 			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
@@ -114,10 +118,14 @@ public class CreateActivity extends Activity {
 			response = httpresponse.getEntity().toString();
 			System.out.println(response);
 
+			resObj = ResponseObject.createResponse(response, false, username);
+
 		} catch (ClientProtocolException e) {
 		} catch (IOException e) {
 		} catch (AuthenticationException e1) {
 			e1.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -126,11 +134,13 @@ public class CreateActivity extends Activity {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			Intent intent = new Intent(getApplicationContext(),
 					InitGameActivity.class);
+			intent.putExtra("username", username);
+			intent.putExtra("password", password);
 			finish();
 			startActivity(intent);
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
 	}
-	
+
 }

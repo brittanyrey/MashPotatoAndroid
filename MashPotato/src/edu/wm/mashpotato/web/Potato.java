@@ -4,10 +4,10 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Random;
 
-public class Potato  implements Serializable{
-    private String pId;
-    private int multiplier;   
-    
+public class Potato implements Serializable {
+	private String pId;
+	private int multiplier;
+
 	public Potato(String pId, int multiplier, long creationDate, String holder,
 			long lifeSpan, String gameID, int temp, double[] loc, long holding) {
 		super();
@@ -21,27 +21,35 @@ public class Potato  implements Serializable{
 		this.loc = loc;
 		this.holding = holding;
 	}
+
 	public String getpId() {
 		return pId;
 	}
+
 	public void setpId(String pId) {
 		this.pId = pId;
 	}
+
 	public int getMultiplier() {
 		return multiplier;
 	}
+
 	public void setMultiplier(int multiplier) {
 		this.multiplier = multiplier;
 	}
+
 	public long getCreationDate() {
 		return creationDate;
 	}
+
 	public void setCreationDate(long creationDate) {
 		this.creationDate = creationDate;
 	}
+
 	public String getHolder() {
 		return holder;
 	}
+
 	public void setHolder(String holder) {
 		this.holder = holder;
 	}
@@ -51,24 +59,31 @@ public class Potato  implements Serializable{
 	public void setLifeSpan(long lifeSpan) {
 		this.lifeSpan = lifeSpan;
 	}
+
 	public String getGameID() {
 		return gameID;
 	}
+
 	public void setGameID(String gameID) {
 		this.gameID = gameID;
 	}
+
 	public int getTemp() {
 		return temp;
 	}
+
 	public void setTemp(int temp) {
 		this.temp = temp;
 	}
+
 	public double[] getLoc() {
 		return loc;
 	}
+
 	public void setLoc(double[] loc) {
 		this.loc = loc;
 	}
+
 	private long creationDate;
     private String holder;
     private long lifeSpan;
@@ -91,13 +106,13 @@ public class Potato  implements Serializable{
     	return temp;
     }
     
+
 	public long getHolding() {
 		return holding;
 	}
+
 	public void setHolding(long holding) {
 		this.holding = holding;
 	}
-    
-    
 
 }

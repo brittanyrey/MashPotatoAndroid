@@ -21,68 +21,59 @@ package edu.wm.mashpotato.accelerometer;
 import java.util.ArrayList;
 
 /**
- * Counts steps provided by StepDetector and passes the current
- * step count to the activity.
+ * Counts steps provided by StepDetector and passes the current step count to
+ * the activity.
  */
-public class StepDisplayer implements StepListener{ //SpeakingTimer.Listener {
+public class StepDisplayer implements StepListener {
 
-    private int mCount = 0;
-    //PedometerSettings mSettings;
-    Utils mUtils;
+	private int mCount = 0;
+	Utils mUtils;
 
-    public StepDisplayer(Utils utils) {
-        mUtils = utils;
-    //    mSettings = settings;
-        notifyListener();
-    }
-    public void setUtils(Utils utils) {
-        mUtils = utils;
-    }
+	public StepDisplayer(Utils utils) {
+		mUtils = utils;
+		notifyListener();
+	}
 
-    public void setSteps(int steps) {
-        mCount = steps;
-        notifyListener();
-    }
-    public void onStep() {
-        mCount ++;
-        notifyListener();
-    }
-    public void reloadSettings() {
-        notifyListener();
-    }
-    public void passValue() {
-    }
-    
-    
+	public void setUtils(Utils utils) {
+		mUtils = utils;
+	}
 
-    //-----------------------------------------------------
-    // Listener
-    
-    public interface Listener {
-        public void stepsChanged(int value);
-        public void passValue();
-    }
-    private ArrayList<Listener> mListeners = new ArrayList<Listener>();
+	public void setSteps(int steps) {
+		mCount = steps;
+		notifyListener();
+	}
 
-    public void addListener(Listener l) {
-        mListeners.add(l);
-    }
-    public void notifyListener() {
-        for (Listener listener : mListeners) {
-            listener.stepsChanged((int)mCount);
-        }
-    }
-    
-    //-----------------------------------------------------
-    // Speaking
-    
-    public void speak() {
-        /*if (mSettings.shouldTellSteps()) { 
-            if (mCount > 0) {
-                mUtils.say("" + mCount + " steps");
-            }
-        }*/
-    }
-    
-    
+	public void onStep() {
+		mCount++;
+		notifyListener();
+	}
+
+	public void reloadSettings() {
+		notifyListener();
+	}
+
+	public void passValue() {
+	}
+
+	// -----------------------------------------------------
+	// Listener
+
+	public interface Listener {
+		public void stepsChanged(int value);
+
+		public void passValue();
+	}
+
+	private ArrayList<Listener> mListeners = new ArrayList<Listener>();
+
+	public void addListener(Listener l) {
+		mListeners.add(l);
+	}
+
+	public void notifyListener() {
+		for (Listener listener : mListeners) {
+			listener.stepsChanged((int) mCount);
+		}
+	}
+
 }
