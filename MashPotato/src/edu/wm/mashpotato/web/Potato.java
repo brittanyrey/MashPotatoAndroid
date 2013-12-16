@@ -3,12 +3,20 @@ package edu.wm.mashpotato.web;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Random;
+import java.lang.Math;
 
 import android.util.Log;
 
 public class Potato implements Serializable {
 	private String pId;
 	private int multiplier;
+	private long creationDate;
+    private String holder;
+    private long lifeSpan;
+    private String gameID;
+    private int temp;
+    private double[] loc;
+    private long holding;
 
 	public Potato(String pId, int multiplier, long creationDate, String holder,
 			long lifeSpan, String gameID, int temp, double[] loc, long holding) {
@@ -86,22 +94,12 @@ public class Potato implements Serializable {
 		this.loc = loc;
 	}
 
-	private long creationDate;
-    private String holder;
-    private long lifeSpan;
-    private String gameID;
-    private int temp;
-    private double[] loc;
-    private long holding;
-	private final static String TAG = "Potato";
-    
     public int changeTemp(int steps){
     	long d = new Date().getTime();
     	Random r = new Random(d);
-    	long e = (d - creationDate) * 100/ lifeSpan;
-    	steps = steps / 10;
-    	Log.v(TAG , "Temp: "+ temp);
-    	temp = temp - steps % 10 + (int)e;
+    	long e = (d - creationDate) * 100 / lifeSpan;
+    	steps = (int) Math.log(steps);
+    	temp = temp - steps + (int)e;
     	if(temp < 0){
     		temp = 0;
     	}else if(temp > 100){
