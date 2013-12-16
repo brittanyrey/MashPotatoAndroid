@@ -32,4 +32,5 @@ public final class Constants {
 	public static String hasPotato = "hasString";
 	public static String score = "score";
 	public static String response = "response";
+	public static String updatePlayerInfo = url + "updatePlayerInfo";
 }
