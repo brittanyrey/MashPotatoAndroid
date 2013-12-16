@@ -274,15 +274,8 @@ public class HomeScreenActivity extends Activity implements
 		} catch (AuthenticationException e1) {
 			e1.printStackTrace();
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Intent intent = new Intent(getApplicationContext(),
-				InitGameActivity.class);
-		intent.putExtra("username", username);
-		intent.putExtra("password", password);
-		finish();
-		startActivity(intent);
 	}
 
 	private void setStats() {
