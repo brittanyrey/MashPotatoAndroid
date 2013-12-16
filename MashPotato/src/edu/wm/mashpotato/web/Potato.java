@@ -2,6 +2,7 @@ package edu.wm.mashpotato.web;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Random;
 
 public class Potato  implements Serializable{
     private String pId;
@@ -78,6 +79,7 @@ public class Potato  implements Serializable{
     
     public int changeTemp(int steps){
     	long d = new Date().getTime();
+    	Random r = new Random(d);
     	long e = (d - creationDate) * 100 / lifeSpan;
     	steps = steps / 10;
     	temp = temp - steps % 10 + (int)e;
@@ -89,22 +91,6 @@ public class Potato  implements Serializable{
     	return temp;
     }
     
-    public boolean hot(){
-    	long d = new Date().getTime();
-    	long e = (d - creationDate) / lifeSpan;
-    	if(e > 1){
-    		return true;
-    	}else{
-    		e = ((d + holding / (101 - temp)) - creationDate) / lifeSpan;
-    		if(temp == 100){
-    			return true;
-    		}
-    		if(e > 1){
-    			return true;
-    		}
-    	}
-    	return false;
-    }
 	public long getHolding() {
 		return holding;
 	}

@@ -81,8 +81,8 @@ public class Player  implements Serializable{
 	}
 	private String id;
     private boolean isOut;
-    private double lat;
-    private double lng;
+    public double lat;
+    public double lng;
     private String userId;
     private boolean hasString;
     private int score;
