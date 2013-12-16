@@ -3,12 +3,20 @@
     android:id="@+id/TableLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background"
     tools:context=".LoginActivity" >
 
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_marginTop="100dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/logo" />
+    
     <TableRow
         android:id="@+id/tableRow1"
         android:layout_width="wrap_content"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="50dp"
         android:layout_height="wrap_content" >
 
       
@@ -18,6 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textColorHint="@color/screen_background"
             android:inputType="text" />
 
     </TableRow>
@@ -33,6 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textColorHint="@color/screen_background"
             android:inputType="textPassword" />
         
         

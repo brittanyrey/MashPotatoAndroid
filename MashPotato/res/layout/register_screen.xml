@@ -3,6 +3,7 @@
     android:id="@+id/TableLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background"
     tools:context=".RegisterActivity" >
 
     <TableRow
@@ -15,6 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textColorHint="@color/screen_background"
             android:hint="@string/username"
             android:inputType="text" />
     </TableRow>
@@ -29,6 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textColorHint="@color/screen_background"
             android:hint="@string/password"
             android:inputType="textPassword" />
     </TableRow>
@@ -43,6 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textColorHint="@color/screen_background"
             android:hint="@string/verifyPassword"
             android:inputType="textPassword" />
     </TableRow>
@@ -57,6 +61,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textColorHint="@color/screen_background"
             android:hint="@string/firstName"
             android:inputType="text" />
     </TableRow>
@@ -71,6 +76,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textColorHint="@color/screen_background"
             android:hint="@string/lastName"
             android:inputType="text" />
     </TableRow>

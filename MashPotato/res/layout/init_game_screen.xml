@@ -1,51 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
-    
-    <TableRow
-        android:id="@+id/tableRow2"
-        android:layout_width="fill_parent"
-         android:layout_marginTop="150dp"
-        android:layout_height="wrap_content" >
-        
-            <Button
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relativeLayout"
+    android:layout_width="fill_parent"
+    android:background="@drawable/background"
+    android:layout_height="fill_parent" >
+
+    <Button
         android:id="@+id/createAGame"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
+        android:layout_centerInParent="true"
         android:text="@string/newGame" />
-        
-        </TableRow>
-        
-    <TableRow
-        android:id="@+id/tableRow02"
-        android:layout_width="fill_parent"
-         android:layout_marginTop="20dp"
-        android:layout_height="wrap_content" >
-        
-            <Button
+
+    <Button
         android:id="@+id/joinGame"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
+        android:layout_centerHorizontal="true"
+    	android:layout_above="@id/createAGame"
         android:text="@string/joinGame" />
-        
-        </TableRow>
 
-   <TableRow
-        android:id="@+id/tableRow21"
-         android:layout_marginTop="150dp"
-        android:layout_width="wrap_content"
-        android:layout_gravity="right"
-        android:layout_height="wrap_content" >
-        
     <Button
         android:id="@+id/logout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        
+        android:layout_alignParentBottom="true" 
+        android:layout_alignParentRight="true"
         android:text="@string/logout" />
-    
-    </TableRow>
 
-</LinearLayout>
+</RelativeLayout>
