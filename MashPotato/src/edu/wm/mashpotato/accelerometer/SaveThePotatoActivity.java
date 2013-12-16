@@ -65,7 +65,7 @@ public class SaveThePotatoActivity extends Activity implements LocationListener 
 	private Utils mUtils;
 	private ProgressBar pBar;
 	private TextView level;
-
+ boolean ended = false;
 	private TextView mStepValueView;
 	private int mStepValue;
 	private boolean mQuitting = false; // Set when user selected Quit from menu,
@@ -317,6 +317,7 @@ public class SaveThePotatoActivity extends Activity implements LocationListener 
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 			case STEPS_MSG:
+				if(!ended){
 				mStepValue = (int) msg.arg1;
 				int temp = gameObj.getPotato().get(0).changeTemp(mStepValue);
 				long delay = (100 - temp) * gameObj.getMaxRoundTime() / 100;
@@ -329,6 +330,7 @@ public class SaveThePotatoActivity extends Activity implements LocationListener 
 					mHandler.removeCallbacks(dynamicPoll);
 					mHandler.postAtFrontOfQueue(dynamicPoll);
 					mHandler.post(endIt);
+					ended = true;
 				}
 				else if(temp > 75){
 					mHandler.removeCallbacks(dynamicPoll);
@@ -345,7 +347,7 @@ public class SaveThePotatoActivity extends Activity implements LocationListener 
 					mHandler.postDelayed(dynamicPoll, delay);
 				}
 				mStepValue = temp;
-				mStepValueView.setText("" + mStepValue);
+				mStepValueView.setText("" + mStepValue);}
 				break;
 			default:
 				super.handleMessage(msg);

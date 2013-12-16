@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Random;
 
+import android.util.Log;
+
 public class Potato implements Serializable {
 	private String pId;
 	private int multiplier;
@@ -91,18 +93,21 @@ public class Potato implements Serializable {
     private int temp;
     private double[] loc;
     private long holding;
+	private final static String TAG = "Potato";
     
     public int changeTemp(int steps){
     	long d = new Date().getTime();
     	Random r = new Random(d);
-    	long e = (d - creationDate) * 100 / lifeSpan;
+    	long e = (d - creationDate) * 100/ lifeSpan;
     	steps = steps / 10;
+    	Log.v(TAG , "Temp: "+ temp);
     	temp = temp - steps % 10 + (int)e;
     	if(temp < 0){
     		temp = 0;
     	}else if(temp > 100){
     		temp = 100;
     	}
+    	
     	return temp;
     }
     

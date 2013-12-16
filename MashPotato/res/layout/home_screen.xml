@@ -137,12 +137,12 @@
             android:layout_height="fill_parent"
             android:orientation="vertical" >
 
-            <ImageView
-                android:id="@+id/map"
-                android:layout_width="fill_parent"
-                android:layout_height="190dp"
-                android:layout_centerHorizontal="true"
-                android:src="@android:drawable/btn_dialog" />
+            <fragment
+          android:id="@+id/map"
+          android:layout_width="fill_parent"
+          android:layout_height="190dp"
+          android:layout_centerHorizontal="true"
+          android:name="com.google.android.gms.maps.MapFragment"/>
 
             <Button
                 android:id="@+id/saveThePotato"

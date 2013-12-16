@@ -20,7 +20,17 @@ import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import edu.wm.mashpotato.accelerometer.SaveThePotatoActivity;
 import edu.wm.mashpotato.web.Constants;
@@ -38,6 +48,7 @@ import android.content.IntentFilter.MalformedMimeTypeException;
 import android.graphics.Color;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -56,6 +67,8 @@ import android.text.format.Time;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -64,6 +77,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class HomeScreenActivity extends Activity implements
 		CreateNdefMessageCallback, OnNdefPushCompleteCallback, LocationListener {
@@ -82,7 +96,8 @@ public class HomeScreenActivity extends Activity implements
 
 	private ViewFlipper viewFlipper;
 	private float lastX;
-
+	private static double lat = 0;
+	private static double lng = 0;
 	// home pg
 	private Button savePotato;
 	private ImageButton stats;
@@ -110,6 +125,8 @@ public class HomeScreenActivity extends Activity implements
 
 	private Player player;
 
+	private GoogleMap kmap;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -131,7 +148,7 @@ public class HomeScreenActivity extends Activity implements
 		lv = (ListView) findViewById(R.id.listView1);
 		logout = (ImageButton) findViewById(R.id.logout);
 		stats = (ImageButton) findViewById(R.id.stats);
-
+		kmap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 		usernameText = (TextView) findViewById(R.id.username);
 		score = (TextView) findViewById(R.id.score);
 		hasPotato = (TextView) findViewById(R.id.hasPotato);
@@ -142,8 +159,34 @@ public class HomeScreenActivity extends Activity implements
 		setStats();
 		loadLV();
 		ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_list_item_1, finalList);
+				android.R.layout.simple_list_item_1, finalList){
+			@Override
+        	public View getView(int position, View convertView, ViewGroup parent){
+				TextView textView = (TextView) super.getView(position, convertView, parent);
+				textView.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+				if(gameObj.getPotato().get(0).getHolder().equals(textView.getText().toString())){
+					Drawable myIcon = getResources().getDrawable( R.drawable.potato );
+					textView.setCompoundDrawablesWithIntrinsicBounds(null, null, myIcon, null);
+				}
+				return textView;
+			}
+		};
 		lv.setAdapter(arrayAdapter);
+		lv.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                int position, long id){
+				TextView tv = (TextView) view;
+				for(int i = 0; i < gameObj.getPlayers().size(); i++){
+					if(gameObj.getPlayers().get(i).getId().equals(tv.getText().toString())){
+						CameraPosition cameraPosition = new CameraPosition.Builder().target(
+								new LatLng(gameObj.getPlayers().get(i).getLat(), gameObj.getPlayers().get(i).getLng())).zoom(10).build();
+						kmap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));						
+					}
+				}
+				
+			}
+		});
 
 		viewFlipper.showNext();
 		stats.setBackgroundResource(R.drawable.info);
@@ -243,6 +286,7 @@ public class HomeScreenActivity extends Activity implements
 				}
 			}
 		});
+		updateMap();
 		mHandler.postDelayed(dynamicPoll, 30000);
 	}
 
@@ -404,11 +448,12 @@ public class HomeScreenActivity extends Activity implements
 				pairs.add(new BasicNameValuePair(Constants.score, player
 						.getScore() + ""));
 				pairs.add(new BasicNameValuePair(Constants.temp, 0 + ""));
-				pairs.add(new BasicNameValuePair(Constants.lat, player.getLat()
+				getLocation();
+				pairs.add(new BasicNameValuePair(Constants.lat, lat
 						+ ""));
-				pairs.add(new BasicNameValuePair(Constants.lng, player.getLng()
+				pairs.add(new BasicNameValuePair(Constants.lng, lng
 						+ ""));
-
+				getLocation();
 				UserLoginTask task = new UserLoginTask(true, username,
 						password, pairs, true, false);
 				task.execute(Constants.updatePlayerInfo);
@@ -529,7 +574,9 @@ public class HomeScreenActivity extends Activity implements
 			ResponseObject resp = new ResponseObject();
 			resp.success = false;
 			try {
-				resp = ResponseObject.createResponse(result, this.lobby,
+				System.out.println("response: " + resp.success + " "
+						+ resp.game);
+				resp = ResponseObject.createResponse(result, false,
 						usernameText.getText().toString());
 				System.out.println("response: " + resp.success + " "
 						+ resp.game);
@@ -541,6 +588,8 @@ public class HomeScreenActivity extends Activity implements
 				intent = new Intent(getApplicationContext(), HomeScreenActivity.class);
 				gameObj = resp.game;
 				player = resp.me;
+				getLocation();
+				Log.e(TAG, "Got a new player OBJ");
 				intent.putExtra(Constants.response, resp);
 				Toast.makeText(getApplicationContext(), "Success!",
 						Toast.LENGTH_SHORT).show();
@@ -556,8 +605,9 @@ public class HomeScreenActivity extends Activity implements
 
 	@Override
 	public void onLocationChanged(Location loc) {
-		player.lat = loc.getLatitude();
-		player.lng = loc.getLongitude();
+		lat = loc.getLatitude();
+		lng = loc.getLongitude();
+		System.out.println("");
 	}
 
 	@Override
@@ -579,7 +629,7 @@ public class HomeScreenActivity extends Activity implements
 
 	public Location getLocation() {
 		Location location = null;
-		// Log.e(TAG, "Get Location");
+		 Log.e(TAG, "Get Location");
 		try {
 
 			// getting GPS status
@@ -592,6 +642,7 @@ public class HomeScreenActivity extends Activity implements
 
 			if (!isGPSEnabled && !isNetworkEnabled) {
 				// no network provider is enabled
+				Log.e(TAG, "No provider");
 			} else {
 				this.canGetLocation = true;
 				// First get location from Network Provider
@@ -605,8 +656,9 @@ public class HomeScreenActivity extends Activity implements
 						location = mlocManager
 								.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 						if (location != null) {
-							player.lat = location.getLatitude();
-							player.lng = location.getLongitude();
+							lat = location.getLatitude();
+							lng = location.getLongitude();
+							Log.e(TAG, "set vals " + lat + "  " + lng);
 						}
 					}
 				}
@@ -622,8 +674,10 @@ public class HomeScreenActivity extends Activity implements
 							location = mlocManager
 									.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 							if (location != null) {
-								player.lat = location.getLatitude();
-								player.lng = location.getLongitude();
+								lat = location.getLatitude();
+								lng = location.getLongitude();
+								Log.e(TAG, "set vals " + lat + "  " + lng);
+								
 							}
 						}
 					}
@@ -633,7 +687,15 @@ public class HomeScreenActivity extends Activity implements
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+		
+		
+		
+		
+		
+//		mHandler.removeCallbacks(mapUps);
+//		mHandler.postAtFrontOfQueue(mapUps);
+		
+		Log.e(TAG, "Made it out " + lat + " " + lng);
 		return location;
 	}
 
@@ -656,18 +718,73 @@ public class HomeScreenActivity extends Activity implements
 			pairs.add(new BasicNameValuePair(Constants.score, player.getScore()
 					+ ""));
 
-			pairs.add(new BasicNameValuePair(Constants.lat, player.getLat()
+			pairs.add(new BasicNameValuePair(Constants.lat, lat
 					+ ""));
-			pairs.add(new BasicNameValuePair(Constants.lng, player.getLng()
+			Log.e(TAG, player.getLat()+ " changes");
+			pairs.add(new BasicNameValuePair(Constants.lng, lng
 					+ ""));
-
+			Log.e(TAG, player.getLng()+ " changes");
+			getLocation();
 			UserLoginTask task = new UserLoginTask(true, username, password,
 					pairs, true, false);
 			task.execute(Constants.updatePlayerInfo);
 			long temp = (long) gameObj.getPotato().get(0).getTemp();
-			long delay = gameObj.getMaxRoundTime() / temp / 10;
+			long delay = gameObj.getMaxRoundTime() / (101 - temp) / 10;
 			mHandler.postDelayed(this, delay);
 		}
 
 	};
+	
+	Runnable mapUps = new Runnable() {
+
+		@Override
+		public void run() {
+			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+			if (player.isHasString()) {
+				pairs.add(new BasicNameValuePair(Constants.potatoId, player
+						.getPotatoList().get(0)));
+				pairs.add(new BasicNameValuePair(Constants.temp, gameObj
+						.getPotato().get(0).getTemp()
+						+ ""));
+			} else {
+				pairs.add(new BasicNameValuePair(Constants.potatoId, ""));
+				pairs.add(new BasicNameValuePair(Constants.temp, 0 + ""));
+			}
+			pairs.add(new BasicNameValuePair(Constants.holder, username));
+			pairs.add(new BasicNameValuePair(Constants.score, player.getScore()
+					+ ""));
+
+			pairs.add(new BasicNameValuePair(Constants.lat, lat
+					+ ""));
+			Log.e(TAG, player.getLat()+ " changes");
+			pairs.add(new BasicNameValuePair(Constants.lng, lng
+					+ ""));
+			Log.e(TAG, player.getLng()+ " changes");
+//			getLocation();
+			UserLoginTask task = new UserLoginTask(true, username, password,
+					pairs, true, false);
+			task.execute(Constants.updatePlayerInfo);
+		}
+
+	};
+	
+	public void updateMap(){
+		getLocation();
+		for(int i = 0; i < gameObj.getPlayers().size(); i++){
+			if(gameObj.getPlayers().get(i).getId().equals(username)){
+				gameObj.getPlayers().get(i).lat = lat;
+				gameObj.getPlayers().get(i).lng = lng;
+			}
+		}
+		for(int i = 0; i < gameObj.getPlayers().size(); i++){
+			if(gameObj.getPlayers().get(i).isHasString())
+					kmap.addMarker(new MarkerOptions().position(new LatLng(gameObj.getPlayers().get(i).getLat(), gameObj.getPlayers().get(i).getLng())).title(gameObj.getPlayers().get(i).getId()).icon(BitmapDescriptorFactory.fromResource(R.drawable.potato)));
+			else
+				kmap.addMarker(new MarkerOptions().position(new LatLng(gameObj.getPlayers().get(i).getLat(), gameObj.getPlayers().get(i).getLng())).title(gameObj.getPlayers().get(i).getId()).icon(BitmapDescriptorFactory.fromResource(R.drawable.smiley)));
+			System.out.println("Updating map");
+		}
+		
+	}
+		
+	
 }

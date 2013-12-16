@@ -56,8 +56,14 @@ public class ResponseObject implements Serializable {
 			boolean hasPotato = obj.getBoolean(Constants.hasPotato);
 			Integer score = obj.getInt(Constants.score);
 			String game = obj.getString(Constants.game);
+			List<String> plist = new ArrayList<String>();
+			if(hasPotato){
+				JSONArray arr = (JSONArray) obj.getJSONArray("potatoList");
+				String potatoID = arr.getString(0);
+				plist.add(potatoID);
+			}
 			Player player = new Player(id, isOut, 0, 0, userId, hasPotato,
-					(int) score, game, null, null);
+					(int) score, game, null, plist);
 			if (userId.equals(username)) {
 				resp.me = player;
 			}
