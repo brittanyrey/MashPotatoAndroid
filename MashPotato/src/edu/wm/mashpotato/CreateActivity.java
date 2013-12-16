@@ -40,6 +40,8 @@ public class CreateActivity extends Activity {
 	private EditText numPotatoes;
 	private EditText maxRoundLength;
 	private CheckBox gems;
+	
+	private ResponseObject resObj;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -74,17 +76,13 @@ public class CreateActivity extends Activity {
 					e.printStackTrace();
 				}
 
-				if (true) // TODO response = success
-				{
+				if (resObj.success) {
 					System.out.println("join a game");
 					Intent intent = new Intent(getApplicationContext(),
 							JoinActivity.class);
-					try {
-						intent.putExtra("gameObj", ResponseObject.createResponse(response, false, username));
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					
+						intent.putExtra("gameObj", resObj);
+					
 					intent.putExtra("username", username);
 					intent.putExtra("password", password);
 					finish();
@@ -121,11 +119,15 @@ public class CreateActivity extends Activity {
 			HttpResponse httpresponse = httpclient.execute(httppost);
 			response = httpresponse.getEntity().toString();
 			System.out.println(response);
+			
+			resObj = ResponseObject.createResponse(response, false, username);
 
 		} catch (ClientProtocolException e) {
 		} catch (IOException e) {
 		} catch (AuthenticationException e1) {
 			e1.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
 	}
 
