@@ -31,6 +31,7 @@ import edu.wm.mashpotato.web.ResponseObject;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -107,7 +108,7 @@ public class GameJoinActivity extends Activity {
 
 	private boolean inGame() {
 		for (int x = 0; x < gameObj.getPlayers().size(); x++) {
-			if(gameObj.getPlayers().get(x).getId().equals(username)) {
+			if (gameObj.getPlayers().get(x).getId().equals(username)) {
 				return true;
 			}
 		}
@@ -148,6 +149,12 @@ public class GameJoinActivity extends Activity {
 		} catch (AuthenticationException e1) {
 			e1.printStackTrace();
 		}
+		loadLV();
+		updateInfo();
+
+		ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,
+				android.R.layout.simple_list_item_1, finalList);
+		lv.setAdapter(arrayAdapter);
 	}
 
 	private void startGame() {
@@ -177,10 +184,8 @@ public class GameJoinActivity extends Activity {
 		}
 		Intent intent = new Intent(getApplicationContext(),
 				HomeScreenActivity.class);
-		intent.putExtra("username", username
-				.toString());
-		intent.putExtra("password", password
-				.toString());
+		intent.putExtra("username", username.toString());
+		intent.putExtra("password", password.toString());
 		intent.putExtra("gameObj", gameObj);
 		finish();
 		startActivity(intent);
@@ -211,6 +216,12 @@ public class GameJoinActivity extends Activity {
 		} catch (AuthenticationException e1) {
 			e1.printStackTrace();
 		}
+		loadLV();
+		updateInfo();
+
+		ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,
+				android.R.layout.simple_list_item_1, finalList);
+		lv.setAdapter(arrayAdapter);
 	}
 
 	private void updateInfo() {
@@ -221,7 +232,6 @@ public class GameJoinActivity extends Activity {
 		} else {
 			join_start_Button.setText("Join the game.");
 		}
-		maxPotatoes.setText("unknown");// TODO
 		date.setText(String.valueOf(gameObj.getCreationDate()));
 	}
 
@@ -229,5 +239,19 @@ public class GameJoinActivity extends Activity {
 		for (int x = 0; x < gameObj.getPlayers().size(); x++) {
 			finalList.add(gameObj.getPlayers().get(x).getId());
 		}
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			Intent intent = new Intent(getApplicationContext(),
+					JoinActivity.class);
+			intent.putExtra("username", username);
+			intent.putExtra("password", password);
+			finish();
+			startActivity(intent);
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 }

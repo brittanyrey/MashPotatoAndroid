@@ -224,8 +224,8 @@ public class HomeScreenActivity extends Activity
 		});
 	}
 
-	// TODO DOES NOT WORK
 	private void leaveGame() {
+		System.out.println(username);
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpPost httppost = new HttpPost(Constants.removePlayer);
 		UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(
@@ -260,10 +260,8 @@ public class HomeScreenActivity extends Activity
 		}
 		Intent intent = new Intent(getApplicationContext(),
 				InitGameActivity.class);
-		intent.putExtra("username", username
-				.toString());
-		intent.putExtra("password", password
-				.toString());
+		intent.putExtra("username", username);
+		intent.putExtra("password", password);
 		finish();
 		startActivity(intent);
 	}
@@ -274,9 +272,7 @@ public class HomeScreenActivity extends Activity
 				usernameText.setText(username);
 				score.setText(gameObj.getPlayers().get(x).getScore() + "");
 				hasPotato
-						.setText(gameObj.getPlayers().get(x).getPotatoList() != null
-								&& gameObj.getPlayers().get(x).getPotatoList()
-										.size() > 0 ? "Yes" : "No");
+						.setText(gameObj.getPlayers().get(x).isHasString() ? "Yes" : "No");
 				status.setText(gameObj.getPlayers().get(x).isOut() ? "Out"
 						: "Alive");
 				// TODO ADD BACK IN

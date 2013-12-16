@@ -38,6 +38,7 @@
         android:text="@string/shake"
         android:textColor="@color/display_background"
         android:textAlignment="center"
+        android:gravity="center_horizontal"
         android:textSize="27sp" 
         android:textStyle="italic"/>
      
@@ -47,10 +48,11 @@
         android:layout_height="wrap_content"
         android:layout_below = "@+id/shake"
         android:layout_centerHorizontal="true" 
+        android:gravity="center_horizontal"
         android:text="@string/t"
         android:textColor="@color/display_background"
         android:textAlignment="center"
-        android:textSize="27sp" 
+        android:textSize="50sp" 
         android:textStyle="italic"/>
 
 </RelativeLayout>

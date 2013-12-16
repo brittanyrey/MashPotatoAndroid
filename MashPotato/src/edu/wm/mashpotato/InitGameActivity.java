@@ -1,5 +1,27 @@
 package edu.wm.mashpotato;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.auth.AuthenticationException;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+
+import edu.wm.mashpotato.web.Constants;
+import edu.wm.mashpotato.web.ResponseObject;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,15 +34,17 @@ public class InitGameActivity extends Activity {
 	private Button joinButton;
 	private Button logoutButton;
 
-	private String username = "userbase";
-	private String password = "password";
-	private String response = "fail";
-	
+	private String username;
+	private String password;
+	private String response;
+
+	private ResponseObject resObj;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.init_game_screen);
-		
+
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 			username = extras.getString("username");
@@ -36,10 +60,8 @@ public class InitGameActivity extends Activity {
 				System.out.println("create a game");
 				Intent intent = new Intent(getApplicationContext(),
 						CreateActivity.class);
-				intent.putExtra("username", username
-						.toString());
-				intent.putExtra("password", password
-						.toString());
+				intent.putExtra("username", username.toString());
+				intent.putExtra("password", password.toString());
 				finish();
 				startActivity(intent);
 			}
@@ -47,11 +69,25 @@ public class InitGameActivity extends Activity {
 
 		joinButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				System.out.println("join a game");
+				System.out.println("join a game " + username);
+
+				Thread thread = new Thread(new Runnable() {
+					@Override
+					public void run() {
+						loadLV();
+					}
+				});
+				thread.start();
+				try {
+					thread.join();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 				Intent intent = new Intent(getApplicationContext(),
 						JoinActivity.class);
 				intent.putExtra("username", username);
 				intent.putExtra("password", password);
+				intent.putExtra("gameObj", resObj);
 				finish();
 				startActivity(intent);
 			}
@@ -68,4 +104,39 @@ public class InitGameActivity extends Activity {
 		});
 	}
 
+	private void loadLV() {
+		System.out.println(username);
+		HttpClient httpclient = new DefaultHttpClient();
+		HttpPost httppost = new HttpPost(Constants.gameLobby);
+		UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(
+				username, password);
+		BasicScheme scheme = new BasicScheme();
+		Header authorizationHeader;
+		try {
+			authorizationHeader = scheme.authenticate(credentials, httppost);
+			httppost.addHeader(authorizationHeader);
+
+			// Add data
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+			nameValuePairs.add(new BasicNameValuePair("lat", "0"));
+			nameValuePairs.add(new BasicNameValuePair("lng", "0"));
+			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+			// Execute HTTP Post Request
+			HttpResponse httpresponse = httpclient.execute(httppost);
+			HttpEntity responseEntity = httpresponse.getEntity();
+
+			String content = EntityUtils.toString(responseEntity);
+
+			resObj = ResponseObject.createResponse(content, true, username);
+
+		} catch (ClientProtocolException e) {
+		} catch (IOException e) {
+		} catch (AuthenticationException e1) {
+			e1.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

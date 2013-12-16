@@ -109,19 +109,18 @@ public class SaveThePotatoActivity extends Activity {
 	}
 
 	private void setLevel(int heat) {
-		long max = 100;
-		if (heat / max > .9) {
-			mStepValueView.setText("Very Hot");
-			mStepValueView.setTextColor(Color.RED);
-		} else if (heat / max > .75) {
-			mStepValueView.setText("Hot");
-			mStepValueView.setTextColor(Color.RED);
-		} else if (heat / max > .5) {
-			mStepValueView.setText("Warm");
-			mStepValueView.setTextColor(Color.MAGENTA);
+		if (heat > 90) {
+			level.setText("Very Hot.");
+			level.setTextColor(Color.RED);
+		} else if (heat > 75) {
+			level.setText("Hot.");
+			level.setTextColor(Color.RED);
+		} else if (heat > 50) {
+			level.setText("Warm.");
+			level.setTextColor(Color.MAGENTA);
 		} else {
-			mStepValueView.setText("Cool");
-			mStepValueView.setTextColor(Color.BLUE);
+			level.setText("Cool.");
+			level.setTextColor(Color.BLUE);
 		}
 	}
 
