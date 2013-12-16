@@ -99,10 +99,19 @@ public class SaveThePotatoActivity extends Activity implements LocationListener 
 		password = extras.getString("password");
 		gameObj = (Game) extras.get("gameObj");
 		player = (Player) extras.get("player");
-		mStepValue = gameObj.getPotato().get(0).getTemp();
+		mStepValue = 0;
 
 		setContentView(R.layout.save_the_potato_screen);
+		
+		new Thread(new Runnable(){
 
+			@Override
+			public void run() {
+				
+				mHandler.postDelayed(updateTemp, 5000);
+			}
+			
+		}).start();
 		mUtils = Utils.getInstance();
 	}
 
@@ -177,6 +186,7 @@ public class SaveThePotatoActivity extends Activity implements LocationListener 
 	protected void onDestroy() {
 		Log.i(TAG, "[ACTIVITY] onDestroy");
 		super.onDestroy();
+		System.exit(0);
 	}
 
 	protected void onRestart() {
@@ -373,6 +383,7 @@ public class SaveThePotatoActivity extends Activity implements LocationListener 
 				intent.putExtra("password", password);
 				intent.putExtra("gameObj", gameObj);
 				intent.putExtra("player", player);
+				mHandler.removeCallbacks(updateTemp);
 				finish();
 				startActivity(intent);
 			}
@@ -491,7 +502,7 @@ public class SaveThePotatoActivity extends Activity implements LocationListener 
 					pairs, true, false);
 			task.execute(Constants.updatePlayerInfo);
 			long temp = (long) gameObj.getPotato().get(0).getTemp();
-			long delay = gameObj.getMaxRoundTime() / temp / 10;
+			long delay = gameObj.getMaxRoundTime() / (temp + 1) / 10;
 			mHandler.postDelayed(this, delay);
 		}
 
@@ -509,5 +520,16 @@ public class SaveThePotatoActivity extends Activity implements LocationListener 
 		}
 
 	};
+	
+	Runnable updateTemp = new Runnable() {
+
+		@Override
+		public void run() {
+			gameObj.getPotato().get(0).changeTemp(mStepValue);
+			mStepValueView.setText("" + gameObj.getPotato().get(0).getTemp());
+			mHandler.postDelayed(this, 5000);
+		}
+
+	}; 
 
 }

@@ -155,6 +155,13 @@ public class HomeScreenActivity extends Activity implements
 		status = (TextView) findViewById(R.id.playerStatus);
 		icon = (ImageView) findViewById(R.id.avatar);
 		leaveGame = (Button) findViewById(R.id.leaveGame);
+		
+		if (player.isHasString()){
+			savePotato.setVisibility(0);
+		}
+		else{
+			savePotato.setVisibility(8);
+		}
 
 		setStats();
 		loadLV();

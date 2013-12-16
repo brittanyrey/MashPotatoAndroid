@@ -17,6 +17,7 @@ public class Potato implements Serializable {
     private int temp;
     private double[] loc;
     private long holding;
+    private static String TAG = "Potato";
 
 	public Potato(String pId, int multiplier, long creationDate, String holder,
 			long lifeSpan, String gameID, int temp, double[] loc, long holding) {
@@ -97,9 +98,19 @@ public class Potato implements Serializable {
     public int changeTemp(int steps){
     	long d = new Date().getTime();
     	Random r = new Random(d);
-    	long e = (d - creationDate) * 100 / lifeSpan;
+    	long e = (d + r.nextInt(((int) (d - creationDate))) - creationDate) * 100 / lifeSpan;
+    	if(e < 0){
+    		e = d % lifeSpan / 1000 / 60;
+    	}
+    	Log.e(TAG, "Before temp " + temp+" steps "+steps + " e " + e );
+//    	if(d - creationDate / lifeSpan > 1){
+//    		temp = 100;
+//    		return temp;
+//    	}
     	steps = (int) Math.log(steps);
-    	temp = temp - steps + (int)e;
+    	Log.e(TAG, "Before temp " + temp+" steps "+steps + " e " + e );
+    	temp = temp - steps * 3 + (int)e;
+    	Log.e(TAG, "After temp " + temp);
     	if(temp < 0){
     		temp = 0;
     	}else if(temp > 100){

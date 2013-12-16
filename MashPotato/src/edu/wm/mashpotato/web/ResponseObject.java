@@ -20,7 +20,7 @@ public class ResponseObject implements Serializable {
 
 	public static ResponseObject createResponse(String resp, boolean lobby,
 			String username) throws JSONException {
-		Log.v(TAG, resp);
+//		Log.v(TAG, resp);
 		JSONObject obj = new JSONObject(resp);
 		ResponseObject retVal = new ResponseObject();
 		retVal.status = obj.getString(Constants.status);
@@ -33,12 +33,17 @@ public class ResponseObject implements Serializable {
 			gamesList = ResponseObject.makeGameList(objArray, retVal, username);
 		}
 		if (!lobby && hasGame) {
-			Log.v(TAG, obj.toString());
+//			Log.v(TAG, obj.toString());
+			if(gamesList.size() >= 1)
 			retVal.game = gamesList.get(0);
+			else
+				retVal.success = false;
 			// double lat = obj.get
 		} else {
 			retVal.lobbyList = gamesList;
-			Log.v(TAG, obj.toString());
+			if(gamesList.size() >= 1)
+			retVal.game = gamesList.get(0);
+//			Log.v(TAG, obj.toString());
 		}
 		return retVal;
 	}
