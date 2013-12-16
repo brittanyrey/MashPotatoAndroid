@@ -18,7 +18,21 @@
 
 package edu.wm.mashpotato.accelerometer;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+
+import edu.wm.mashpotato.HomeScreenActivity;
 import edu.wm.mashpotato.R;
+import edu.wm.mashpotato.HomeScreenActivity.UserLoginTask;
+import edu.wm.mashpotato.web.Constants;
+import edu.wm.mashpotato.web.Game;
+import edu.wm.mashpotato.web.Player;
+import edu.wm.mashpotato.web.ResponseObject;
+import edu.wm.mashpotato.web.WebTask;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -26,6 +40,9 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -39,8 +56,9 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class SaveThePotatoActivity extends Activity {
+public class SaveThePotatoActivity extends Activity implements LocationListener {
 	private static final String TAG = "Pedometer";
 	private SharedPreferences mSettings;
 	// private PedometerSettings mPedometerSettings;
@@ -54,18 +72,33 @@ public class SaveThePotatoActivity extends Activity {
 										// can be used by onPause, onStop,
 										// onDestroy
 
+	private static final int MESSAGE_SENT = 1;
+	private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
+	 
+    // The minimum time between updates in milliseconds
+    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
+    LocationManager mlocManager;
+    private boolean canGetLocation;
 	/**
 	 * True, when service is running.
 	 */
 	private boolean mIsRunning;
+	private String username;
+	private String password;
+	private Game gameObj;
+	private Player player;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		Log.i(TAG, "[ACTIVITY] onCreate");
 		super.onCreate(savedInstanceState);
-
-		mStepValue = 0;
+		Bundle extras = getIntent().getExtras();
+		username = extras.getString("username");
+		password = extras.getString("password");
+		gameObj = (Game) extras.get("gameObj");
+		player = (Player) extras.get("player");
+		mStepValue = gameObj.getPotato().get(0).getTemp();
 
 		setContentView(R.layout.save_the_potato_screen);
 
@@ -104,7 +137,7 @@ public class SaveThePotatoActivity extends Activity {
 
 		mStepValueView = (TextView) findViewById(R.id.temp);
 		level = (TextView) findViewById(R.id.heat);
-
+		
 		setLevel(mStepValue);
 	}
 
@@ -285,6 +318,33 @@ public class SaveThePotatoActivity extends Activity {
 			switch (msg.what) {
 			case STEPS_MSG:
 				mStepValue = (int) msg.arg1;
+				int temp = gameObj.getPotato().get(0).changeTemp(mStepValue);
+				long delay = (100 - temp) * gameObj.getMaxRoundTime() / 100;
+				if(delay < 15000){
+					delay = 15000;
+				}else if(delay > 60000){
+					delay = 60000;
+				}
+				if(temp == 100){
+					mHandler.removeCallbacks(dynamicPoll);
+					mHandler.postAtFrontOfQueue(dynamicPoll);
+					mHandler.post(endIt);
+				}
+				else if(temp > 75){
+					mHandler.removeCallbacks(dynamicPoll);
+					mHandler.postDelayed(dynamicPoll, delay);
+					
+				}else if(temp > 50){
+					mHandler.removeCallbacks(dynamicPoll);
+					mHandler.postDelayed(dynamicPoll, delay);
+				}else if (temp > 25){
+					mHandler.removeCallbacks(dynamicPoll);
+					mHandler.postDelayed(dynamicPoll, delay);
+				}else{
+					mHandler.removeCallbacks(dynamicPoll);
+					mHandler.postDelayed(dynamicPoll, delay);
+				}
+				mStepValue = temp;
 				mStepValueView.setText("" + mStepValue);
 				break;
 			default:
@@ -293,5 +353,163 @@ public class SaveThePotatoActivity extends Activity {
 		}
 
 	};
+	
+    public class UserLoginTask extends WebTask {
+		public UserLoginTask(boolean hasPairs, String username,
+				String password, List<NameValuePair> pairs, boolean isPost, boolean lobby) {
+			super(hasPairs, username, password, pairs, isPost, lobby);
+		}
 
+
+		@Override
+		protected void onPostExecute(String result) {
+			ResponseObject resp = new ResponseObject();
+			resp.success = false;
+			try {
+				resp = ResponseObject.createResponse(result, this.lobby, username);
+				System.out.println("response: " + resp.success + " "+resp.game);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			if(resp.success){
+				gameObj = resp.game;
+				player = resp.me;
+			}
+			if (resp.success && this.pairs.size() == 1) {
+				Intent intent = null;
+				intent = new Intent(getApplicationContext(), HomeScreenActivity.class);
+				intent.putExtra(Constants.response, resp);
+				Toast.makeText(getApplicationContext(), "Boom!", Toast.LENGTH_SHORT).show();
+				intent.putExtra("username", username);
+				intent.putExtra("password", password);
+				intent.putExtra("gameObj", gameObj);
+				intent.putExtra("player", player);
+				finish();
+				startActivity(intent);
+			} 
+		}
+	}
+    
+    @Override
+    public void onLocationChanged(Location loc)
+    {
+        player.lat = loc.getLatitude();
+        player.lng = loc.getLongitude();
+    }
+
+    @Override
+    public void onProviderDisabled(String provider)
+    {
+      Toast.makeText( getApplicationContext(), "Gps Disabled", Toast.LENGTH_SHORT ).show();
+    }
+
+    @Override
+    public void onProviderEnabled(String provider)
+    {
+      Toast.makeText( getApplicationContext(), "Gps Enabled", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras)
+    {
+
+    }
+    
+    public Location getLocation() {
+        Location location = null;
+        // Log.e(TAG, "Get Location");
+         try {
+
+            // getting GPS status
+            boolean isGPSEnabled = mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+            // getting network status
+            boolean isNetworkEnabled = mlocManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+            if (!isGPSEnabled && !isNetworkEnabled) {
+                // no network provider is enabled
+            } else {
+                this.canGetLocation = true;
+                // First get location from Network Provider
+                if (isNetworkEnabled) {
+                    mlocManager.requestLocationUpdates(
+                            LocationManager.NETWORK_PROVIDER,
+                            MIN_TIME_BW_UPDATES,
+                            MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+ // Log.d("Network", "Network");
+                    if (mlocManager != null) {
+                        location = mlocManager
+                                .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                        if (location != null) {
+                            player.lat = location.getLatitude();
+                            player.lng = location.getLongitude();
+                        }
+                    }
+                }
+                // if GPS Enabled get lat/long using GPS Services
+                if (isGPSEnabled) {
+                    if (location == null) {
+                          mlocManager.requestLocationUpdates(
+                                LocationManager.GPS_PROVIDER,
+                                MIN_TIME_BW_UPDATES,
+                                MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+ // Log.d("GPS Enabled", "GPS Enabled");
+                        if (mlocManager != null) {
+                            location = mlocManager
+                                    .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                            if (location != null) {
+                                player.lat = location.getLatitude();
+                                player.lng = location.getLongitude();
+                            }
+                        }
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return location;
+    }
+
+    Runnable dynamicPoll = new Runnable(){
+
+		@Override
+		public void run() {
+			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+			if(player.isHasString()){
+				pairs.add(new BasicNameValuePair(Constants.potatoId, player.getPotatoList().get(0)));
+				pairs.add(new BasicNameValuePair(Constants.temp, gameObj.getPotato().get(0).getTemp()+""));
+			}else{
+				pairs.add(new BasicNameValuePair(Constants.potatoId, ""));
+				pairs.add(new BasicNameValuePair(Constants.temp, 0+""));
+			}
+			pairs.add(new BasicNameValuePair(Constants.holder, username));
+			pairs.add(new BasicNameValuePair(Constants.score, player.getScore()+""));
+			
+			pairs.add(new BasicNameValuePair(Constants.lat, player.getLat()+""));
+			pairs.add(new BasicNameValuePair(Constants.lng, player.getLng()+""));
+			
+        	UserLoginTask task = new UserLoginTask(true, username, password, pairs, true, false);
+        	task.execute(Constants.updatePlayerInfo);
+        	long temp = (long)gameObj.getPotato().get(0).getTemp();
+        	long delay = gameObj.getMaxRoundTime()/ temp / 10;
+        	mHandler.postDelayed(this, delay);
+		}
+    	
+    };
+    
+    Runnable endIt = new Runnable(){
+
+		@Override
+		public void run() {
+			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+			pairs.add(new BasicNameValuePair("playerId", username));
+        	UserLoginTask task = new UserLoginTask(true, username, password, pairs, true, false);
+        	task.execute(Constants.removePlayer);
+		}
+    	
+    };
+    
 }

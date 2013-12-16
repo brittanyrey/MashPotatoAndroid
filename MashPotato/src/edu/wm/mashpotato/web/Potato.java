@@ -9,7 +9,7 @@ public class Potato  implements Serializable{
     private int multiplier;   
     
 	public Potato(String pId, int multiplier, long creationDate, String holder,
-			int lifeSpan, String gameID, int temp, double[] loc, long holding) {
+			long lifeSpan, String gameID, int temp, double[] loc, long holding) {
 		super();
 		this.pId = pId;
 		this.multiplier = multiplier;
@@ -45,10 +45,10 @@ public class Potato  implements Serializable{
 	public void setHolder(String holder) {
 		this.holder = holder;
 	}
-	public int getLifeSpan() {
+	public long getLifeSpan() {
 		return lifeSpan;
 	}
-	public void setLifeSpan(int lifeSpan) {
+	public void setLifeSpan(long lifeSpan) {
 		this.lifeSpan = lifeSpan;
 	}
 	public String getGameID() {
@@ -71,7 +71,7 @@ public class Potato  implements Serializable{
 	}
 	private long creationDate;
     private String holder;
-    private int lifeSpan;
+    private long lifeSpan;
     private String gameID;
     private int temp;
     private double[] loc;

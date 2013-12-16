@@ -20,7 +20,7 @@ import android.os.AsyncTask;
 
 public class WebTask extends AsyncTask<String, Void, String>{
 	
-	List<NameValuePair> pairs;
+	protected List<NameValuePair> pairs;
 	boolean hasPairs;
 	protected boolean lobby;
 	String username = "admin";
