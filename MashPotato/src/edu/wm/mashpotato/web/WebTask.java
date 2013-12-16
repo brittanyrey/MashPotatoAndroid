@@ -18,9 +18,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.os.AsyncTask;
 
-public class WebTask extends AsyncTask<String, Void, String> {
-
-	List<NameValuePair> pairs;
+public class WebTask extends AsyncTask<String, Void, String>{
+	
+	protected List<NameValuePair> pairs;
 	boolean hasPairs;
 	protected boolean lobby;
 	String username = "admin";

@@ -101,10 +101,10 @@ public class ResponseObject implements Serializable {
 			String holder = obj.getString("holder");
 			// boolean hasPotato = obj.getBoolean(Constants.hasPotato);
 			int score = 0;
-			// Integer score = obj.getInt(Constants.score);
+//			Integer score = obj.getInt(Constants.score);
+			long lifeSpan = obj.getLong("lifeSpan");
 			String game = obj.getString("gameID");
-			Potato p = new Potato(id, 1, creationDate, holder, score, game,
-					score, null, 0);
+			Potato p = new Potato(id, 1, creationDate, holder, lifeSpan, game, score, null, 0);
 			pList.add(p);
 		}
 

@@ -9,7 +9,7 @@ public class Potato implements Serializable {
 	private int multiplier;
 
 	public Potato(String pId, int multiplier, long creationDate, String holder,
-			int lifeSpan, String gameID, int temp, double[] loc, long holding) {
+			long lifeSpan, String gameID, int temp, double[] loc, long holding) {
 		super();
 		this.pId = pId;
 		this.multiplier = multiplier;
@@ -53,12 +53,10 @@ public class Potato implements Serializable {
 	public void setHolder(String holder) {
 		this.holder = holder;
 	}
-
-	public int getLifeSpan() {
+	public long getLifeSpan() {
 		return lifeSpan;
 	}
-
-	public void setLifeSpan(int lifeSpan) {
+	public void setLifeSpan(long lifeSpan) {
 		this.lifeSpan = lifeSpan;
 	}
 
@@ -87,26 +85,27 @@ public class Potato implements Serializable {
 	}
 
 	private long creationDate;
-	private String holder;
-	private int lifeSpan;
-	private String gameID;
-	private int temp;
-	private double[] loc;
-	private long holding;
-
-	public int changeTemp(int steps) {
-		long d = new Date().getTime();
-		Random r = new Random(d);
-		long e = (d - creationDate) * 100 / lifeSpan;
-		steps = steps / 10;
-		temp = temp - steps % 10 + (int) e;
-		if (temp < 0) {
-			temp = 0;
-		} else if (temp > 100) {
-			temp = 100;
-		}
-		return temp;
-	}
+    private String holder;
+    private long lifeSpan;
+    private String gameID;
+    private int temp;
+    private double[] loc;
+    private long holding;
+    
+    public int changeTemp(int steps){
+    	long d = new Date().getTime();
+    	Random r = new Random(d);
+    	long e = (d - creationDate) * 100 / lifeSpan;
+    	steps = steps / 10;
+    	temp = temp - steps % 10 + (int)e;
+    	if(temp < 0){
+    		temp = 0;
+    	}else if(temp > 100){
+    		temp = 100;
+    	}
+    	return temp;
+    }
+    
 
 	public long getHolding() {
 		return holding;

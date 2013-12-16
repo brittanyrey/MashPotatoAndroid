@@ -204,6 +204,10 @@ public class HomeScreenActivity extends Activity implements
 						.println("SAVE THE POTATO. DO IT FOR THE CHILDRENNNNNN!!!!");
 				Intent intent = new Intent(getApplicationContext(),
 						SaveThePotatoActivity.class);
+				intent.putExtra("username", username);
+		    	intent.putExtra("password", password);
+		    	intent.putExtra("gameObj", gameObj);
+		    	intent.putExtra("player", player);
 				startActivity(intent);
 			}
 		});
@@ -534,8 +538,9 @@ public class HomeScreenActivity extends Activity implements
 			}
 			if (resp.success) {
 				Intent intent = null;
-				intent = new Intent(getApplicationContext(),
-						HomeScreenActivity.class);
+				intent = new Intent(getApplicationContext(), HomeScreenActivity.class);
+				gameObj = resp.game;
+				player = resp.me;
 				intent.putExtra(Constants.response, resp);
 				Toast.makeText(getApplicationContext(), "Success!",
 						Toast.LENGTH_SHORT).show();
