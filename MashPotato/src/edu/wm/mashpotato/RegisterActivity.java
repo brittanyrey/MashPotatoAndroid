@@ -57,8 +57,8 @@ public class RegisterActivity extends Activity {
 
 	ImageView selectedImage;
 
-	 private Integer[] mImageIds = { R.drawable.cube, R.drawable.cone,
-	 R.drawable.doublepyramid, R.drawable.pyramid };
+	private Integer[] mImageIds = { R.drawable.cube, R.drawable.cone,
+			R.drawable.doublepyramid, R.drawable.pyramid };
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -78,19 +78,19 @@ public class RegisterActivity extends Activity {
 		registerButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				System.out.println("set up");
-				if (verifyPasswords() && !clicked){
+				if (verifyPasswords() && !clicked) {
 					clicked = true;
 					List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 					pairs.add(new BasicNameValuePair("userName", usernameText
 							.getText().toString()));
-					pairs.add(new BasicNameValuePair("id", usernameText.getText()
-							.toString()));
+					pairs.add(new BasicNameValuePair("id", usernameText
+							.getText().toString()));
 					pairs.add(new BasicNameValuePair("firstName", firstNameText
 							.getText().toString()));
 					pairs.add(new BasicNameValuePair("lastName", lastNameText
 							.getText().toString()));
-					pairs.add(new BasicNameValuePair("hashedPassword", passwordText
-							.getText().toString()));
+					pairs.add(new BasicNameValuePair("hashedPassword",
+							passwordText.getText().toString()));
 					AsyncTaskRunner runner = new AsyncTaskRunner(true, "admin",
 							"admin", pairs, true, false);
 					runner.execute(new String[] { Constants.addUser });
@@ -107,26 +107,31 @@ public class RegisterActivity extends Activity {
 		gallery.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View v,
 					int position, long id) {
-				 imageURL = mImageIds[position].toString();
-				 selectedImage.setImageResource(mImageIds[position]);
+				imageURL = mImageIds[position].toString();
+				selectedImage.setImageResource(mImageIds[position]);
 			}
 		});
 	}
 
 	private boolean verifyPasswords() {
 		verifyPasswordText.setError(null);
-		System.out.println(passwordText.getText() +" "+verifyPasswordText.getText()+ " "+ 
-						passwordText.getText().toString().equals(verifyPasswordText.getText().toString()));
-		if (! passwordText.getText().toString().equals(verifyPasswordText.getText().toString())) {
+		System.out.println(passwordText.getText()
+				+ " "
+				+ verifyPasswordText.getText()
+				+ " "
+				+ passwordText.getText().toString()
+						.equals(verifyPasswordText.getText().toString()));
+		if (!passwordText.getText().toString()
+				.equals(verifyPasswordText.getText().toString())) {
 			System.out.println("passwords do not match ");
 			verifyPasswordText.setError("Passwords do not match");
 			View focusView = verifyPasswordText;
 			focusView.requestFocus();
 			return false;
-		} 
+		}
 		return true;
 	}
-	
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -158,7 +163,8 @@ public class RegisterActivity extends Activity {
 			resp.success = false;
 			clicked = false;
 			try {
-				resp = ResponseObject.createResponse(result, this.lobby, username);
+				resp = ResponseObject.createResponse(result, this.lobby,
+						username);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}

@@ -40,7 +40,7 @@ public class CreateActivity extends Activity {
 	private EditText numPotatoes;
 	private EditText maxRoundLength;
 	private CheckBox gems;
-	
+
 	private ResponseObject resObj;
 
 	@Override
@@ -65,7 +65,7 @@ public class CreateActivity extends Activity {
 				Thread thread = new Thread(new Runnable() {
 					@Override
 					public void run() {
-						 createGame();
+						createGame();
 					}
 				});
 				thread.start();
@@ -80,9 +80,7 @@ public class CreateActivity extends Activity {
 					System.out.println("join a game");
 					Intent intent = new Intent(getApplicationContext(),
 							JoinActivity.class);
-					
-						intent.putExtra("gameObj", resObj);
-					
+					intent.putExtra("gameObj", resObj);
 					intent.putExtra("username", username);
 					intent.putExtra("password", password);
 					finish();
@@ -95,7 +93,7 @@ public class CreateActivity extends Activity {
 	}
 
 	private void createGame() {
-		System.out.println(username +" "+ password);
+		System.out.println(username + " " + password);
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpPost httppost = new HttpPost(Constants.newGame);
 		UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(
@@ -108,9 +106,9 @@ public class CreateActivity extends Activity {
 
 			// Add data
 			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-			String time = String.valueOf(Integer.parseInt(maxRoundLength.getText().toString()) * 60000);
-			nameValuePairs.add(new BasicNameValuePair("lifeSpan",
-					time));
+			String time = String.valueOf(Integer.parseInt(maxRoundLength
+					.getText().toString()) * 60000);
+			nameValuePairs.add(new BasicNameValuePair("lifeSpan", time));
 			nameValuePairs.add(new BasicNameValuePair("lat", "0"));
 			nameValuePairs.add(new BasicNameValuePair("lng", "0"));
 			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
@@ -119,7 +117,7 @@ public class CreateActivity extends Activity {
 			HttpResponse httpresponse = httpclient.execute(httppost);
 			response = httpresponse.getEntity().toString();
 			System.out.println(response);
-			
+
 			resObj = ResponseObject.createResponse(response, false, username);
 
 		} catch (ClientProtocolException e) {
@@ -144,5 +142,5 @@ public class CreateActivity extends Activity {
 		}
 		return super.onKeyDown(keyCode, event);
 	}
-	
+
 }

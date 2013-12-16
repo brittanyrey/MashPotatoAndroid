@@ -104,7 +104,8 @@ public class GameJoinActivity extends Activity {
 				loadLV();
 				updateInfo();
 
-				ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getApplicationContext(),
+				ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+						getApplicationContext(),
 						android.R.layout.simple_list_item_1, finalList);
 				lv.setAdapter(arrayAdapter);
 			}
@@ -149,15 +150,16 @@ public class GameJoinActivity extends Activity {
 			// Execute HTTP Post Request
 			HttpResponse httpresponse = httpclient.execute(httppost);
 			HttpEntity responseEntity = httpresponse.getEntity();
-			
+
 			String result = EntityUtils.toString(responseEntity);
 			System.out.println(result);
-			
+
 			resObj = ResponseObject.createResponse(result, false, username);
-			System.out.println("response: " + resObj.success + " "+ resObj.game);
-			
+			System.out.println("response: " + resObj.success + " "
+					+ resObj.game);
+
 			gameObj = resObj.game;
-			
+
 		} catch (ClientProtocolException e) {
 		} catch (IOException e) {
 		} catch (AuthenticationException e1) {
@@ -227,11 +229,11 @@ public class GameJoinActivity extends Activity {
 			// Execute HTTP Post Request
 			HttpResponse httpresponse = httpclient.execute(httppost);
 			HttpEntity responseEntity = httpresponse.getEntity();
-			
+
 			String content = EntityUtils.toString(responseEntity);
-			
+
 			resObj = ResponseObject.createResponse(content, false, username);
-			gameObj = resObj.game;	
+			gameObj = resObj.game;
 		} catch (ClientProtocolException e) {
 		} catch (IOException e) {
 		} catch (AuthenticationException e1) {
@@ -274,19 +276,19 @@ public class GameJoinActivity extends Activity {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			
+
 			Intent intent = new Intent(getApplicationContext(),
 					JoinActivity.class);
 			intent.putExtra("username", username);
 			intent.putExtra("password", password);
-			intent.putExtra("gameObj", resObj);			
+			intent.putExtra("gameObj", resObj);
 			finish();
 			startActivity(intent);
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
 	}
-	
+
 	private void loadJoinLV() {
 		System.out.println(username);
 		HttpClient httpclient = new DefaultHttpClient();

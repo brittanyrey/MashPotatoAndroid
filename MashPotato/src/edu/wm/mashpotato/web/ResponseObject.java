@@ -18,8 +18,8 @@ public class ResponseObject implements Serializable {
 	public boolean success;
 	private final static String TAG = "ResponseObject";
 
-	public static ResponseObject createResponse(String resp, boolean lobby, String username)
-			throws JSONException {
+	public static ResponseObject createResponse(String resp, boolean lobby,
+			String username) throws JSONException {
 		Log.v(TAG, resp);
 		JSONObject obj = new JSONObject(resp);
 		ResponseObject retVal = new ResponseObject();
@@ -43,8 +43,8 @@ public class ResponseObject implements Serializable {
 		return retVal;
 	}
 
-	public static List<Player> makePlayerList(JSONArray array, ResponseObject resp, String username)
-			throws JSONException {
+	public static List<Player> makePlayerList(JSONArray array,
+			ResponseObject resp, String username) throws JSONException {
 		List<Player> playerList = new ArrayList<Player>();
 		for (int i = 0; i < array.length(); i++) {
 			JSONObject obj = (JSONObject) array.get(i);
@@ -58,7 +58,7 @@ public class ResponseObject implements Serializable {
 			String game = obj.getString(Constants.game);
 			Player player = new Player(id, isOut, 0, 0, userId, hasPotato,
 					(int) score, game, null, null);
-			if(userId.equals(username)){
+			if (userId.equals(username)) {
 				resp.me = player;
 			}
 			playerList.add(player);
@@ -66,7 +66,8 @@ public class ResponseObject implements Serializable {
 		return playerList;
 	}
 
-	public static List<Game> makeGameList(JSONArray array, ResponseObject resp, String username) throws JSONException {
+	public static List<Game> makeGameList(JSONArray array, ResponseObject resp,
+			String username) throws JSONException {
 		List<Game> gameList = new ArrayList<Game>();
 		Game g = null;
 		for (int i = 0; i < array.length(); i++) {
@@ -76,7 +77,8 @@ public class ResponseObject implements Serializable {
 			long maxRoundTime = obj.getLong(Constants.maxRoundTime);
 			long creationDate = obj.getLong(Constants.creationDate);
 			int roundCount = obj.getInt(Constants.roundCount);
-			List<Potato> potatoList = makePotatoList(obj.getJSONArray("potato"), resp,username);
+			List<Potato> potatoList = makePotatoList(
+					obj.getJSONArray("potato"), resp, username);
 			int state = obj.getInt(Constants.state);
 			JSONArray playerObj = obj.getJSONArray(Constants.players);
 			List<Player> playerList = makePlayerList(playerObj, resp, username);
@@ -97,14 +99,15 @@ public class ResponseObject implements Serializable {
 			// private double lat;
 			// private double lng;
 			String holder = obj.getString("holder");
-//			boolean hasPotato = obj.getBoolean(Constants.hasPotato);
+			// boolean hasPotato = obj.getBoolean(Constants.hasPotato);
 			int score = 0;
-//			Integer score = obj.getInt(Constants.score);
+			// Integer score = obj.getInt(Constants.score);
 			String game = obj.getString("gameID");
-			Potato p = new Potato(id, 1, creationDate, holder, score, game, score, null, 0);
+			Potato p = new Potato(id, 1, creationDate, holder, score, game,
+					score, null, 0);
 			pList.add(p);
 		}
-		
+
 		return pList;
 	}
 }

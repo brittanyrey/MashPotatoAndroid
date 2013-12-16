@@ -65,18 +65,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-public class HomeScreenActivity extends Activity
-	 implements CreateNdefMessageCallback, OnNdefPushCompleteCallback, LocationListener {
-	 NfcAdapter mNfcAdapter;
+public class HomeScreenActivity extends Activity implements
+		CreateNdefMessageCallback, OnNdefPushCompleteCallback, LocationListener {
+	NfcAdapter mNfcAdapter;
 	// NfcManager mNfcManager;
 
 	private static final int MESSAGE_SENT = 1;
 	private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
-	 
-    // The minimum time between updates in milliseconds
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
-    LocationManager mlocManager;
-    private boolean canGetLocation;
+
+	// The minimum time between updates in milliseconds
+	private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
+	LocationManager mlocManager;
+	private boolean canGetLocation;
 
 	private static final String TAG = "HomeScreenActivity";
 
@@ -122,7 +122,8 @@ public class HomeScreenActivity extends Activity
 			gameObj = (Game) extras.get("gameObj");
 			player = (Player) extras.get("player");
 		}
-		Log.i(TAG, "OnNewIntent: " + username + " password: " + password + " gameObj: " + gameObj);
+		Log.i(TAG, "OnNewIntent: " + username + " password: " + password
+				+ " gameObj: " + gameObj);
 
 		finalList = new ArrayList<String>();
 		viewFlipper = (ViewFlipper) findViewById(R.id.ViewFlipper01);
@@ -146,36 +147,39 @@ public class HomeScreenActivity extends Activity
 
 		viewFlipper.showNext();
 		stats.setBackgroundResource(R.drawable.info);
-		stats.setColorFilter(new PorterDuffColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY));
+		stats.setColorFilter(new PorterDuffColorFilter(Color.GREEN,
+				PorterDuff.Mode.MULTIPLY));
 		logout.setBackgroundResource(R.drawable.power);
-		 mlocManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+		mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-         LocationListener mlocListener = this;
-         mlocManager.requestLocationUpdates( LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES, 0, mlocListener);
-		  mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
-		  if(player.isHasString()){
-			  mNfcAdapter.setNdefPushMessageCallback(this, this);
-			  mNfcAdapter.setOnNdefPushCompleteCallback(this, this);
-			  Log.i(TAG, "I have a potato!");
-		  }else{
-			  mNfcAdapter.setNdefPushMessageCallback(null, this);
-			  Log.i(TAG, "No potato!");
-		  }
-//        mNfcAdapter.disableForegroundNdefPush(this);
-        // Register callback to listen for message-sent success
-		
-        
-        pendingIntent = PendingIntent.getActivity(
-        	    this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
-        ndef = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
-        try {
-            ndef.addDataType("*/*");    /* Handles all MIME based dispatches.
-                                           You should specify only the ones that you need. */
-        }
-        catch (MalformedMimeTypeException e) {
-            throw new RuntimeException("fail", e);
-        }
-       intentFiltersArray = new IntentFilter[] {ndef, };
+		LocationListener mlocListener = this;
+		mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+				MIN_TIME_BW_UPDATES, 0, mlocListener);
+		mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
+		if (player.isHasString()) {
+			mNfcAdapter.setNdefPushMessageCallback(this, this);
+			mNfcAdapter.setOnNdefPushCompleteCallback(this, this);
+			Log.i(TAG, "I have a potato!");
+		} else {
+			mNfcAdapter.setNdefPushMessageCallback(null, this);
+			Log.i(TAG, "No potato!");
+		}
+		// mNfcAdapter.disableForegroundNdefPush(this);
+		// Register callback to listen for message-sent success
+
+		pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this,
+				getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+		ndef = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
+		try {
+			ndef.addDataType("*/*"); /*
+									 * Handles all MIME based dispatches. You
+									 * should specify only the ones that you
+									 * need.
+									 */
+		} catch (MalformedMimeTypeException e) {
+			throw new RuntimeException("fail", e);
+		}
+		intentFiltersArray = new IntentFilter[] { ndef, };
 
 		leaveGame.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
@@ -258,12 +262,13 @@ public class HomeScreenActivity extends Activity
 			// Execute HTTP Post Request
 			HttpResponse httpresponse = httpclient.execute(httppost);
 			HttpEntity responseEntity = httpresponse.getEntity();
-			
+
 			String result = EntityUtils.toString(responseEntity);
 			System.out.println(result);
-			
-			ResponseObject resp = ResponseObject.createResponse(result, false, username);
-			System.out.println("response: " + resp.success + " "+resp.game);
+
+			ResponseObject resp = ResponseObject.createResponse(result, false,
+					username);
+			System.out.println("response: " + resp.success + " " + resp.game);
 		} catch (ClientProtocolException e) {
 		} catch (IOException e) {
 		} catch (AuthenticationException e1) {
@@ -286,7 +291,8 @@ public class HomeScreenActivity extends Activity
 				usernameText.setText(username);
 				score.setText(gameObj.getPlayers().get(x).getScore() + "");
 				hasPotato
-						.setText(gameObj.getPlayers().get(x).isHasString() ? "Yes" : "No");
+						.setText(gameObj.getPlayers().get(x).isHasString() ? "Yes"
+								: "No");
 				status.setText(gameObj.getPlayers().get(x).isOut() ? "Out"
 						: "Alive");
 				// TODO ADD BACK IN
@@ -350,297 +356,320 @@ public class HomeScreenActivity extends Activity
 		return false;
 	}
 
-    /**
-     * Implementation for the CreateNdefMessageCallback interface
-     */
-    @Override
-    public NdefMessage createNdefMessage(NfcEvent event) {
-        Time time = new Time();
-        time.setToNow();
-        String text = ("" +
-                player.getId()+" "+gameObj.getPotato().get(0).getpId());
-        NdefMessage msg = new NdefMessage(
-                new NdefRecord[] { createMimeRecord(
-                        "application/edu.wm.mashpotato", text.getBytes())
-                        
-         /**
-          * The Android Application Record (AAR) is commented out. When a device
-          * receives a push with an AAR in it, the application specified in the AAR
-          * is guaranteed to run. The AAR overrides the tag dispatch system.
-          * You can add it back in to guarantee that this
-          * activity starts when receiving a beamed message. For now, this code
-          * uses the tag dispatch system.
-          */
-          //,NdefRecord.createApplicationRecord("com.example.android.beam")
-        });
-        return msg;
-    }
+	/**
+	 * Implementation for the CreateNdefMessageCallback interface
+	 */
+	@Override
+	public NdefMessage createNdefMessage(NfcEvent event) {
+		Time time = new Time();
+		time.setToNow();
+		String text = ("" + player.getId() + " " + gameObj.getPotato().get(0)
+				.getpId());
+		NdefMessage msg = new NdefMessage(new NdefRecord[] { createMimeRecord(
+				"application/edu.wm.mashpotato", text.getBytes())
 
-    /**
-     * Implementation for the OnNdefPushCompleteCallback interface
-     */
-    @Override
-    public void onNdefPushComplete(NfcEvent arg0) {
-        // A handler is needed to send messages to the activity when this
-        // callback occurs, because it happens from a binder thread
-        mHandler.obtainMessage(MESSAGE_SENT).sendToTarget();
-    }
+		/**
+		 * The Android Application Record (AAR) is commented out. When a device
+		 * receives a push with an AAR in it, the application specified in the
+		 * AAR is guaranteed to run. The AAR overrides the tag dispatch system.
+		 * You can add it back in to guarantee that this activity starts when
+		 * receiving a beamed message. For now, this code uses the tag dispatch
+		 * system.
+		 */
+		// ,NdefRecord.createApplicationRecord("com.example.android.beam")
+				});
+		return msg;
+	}
 
-    /** This handler receives a message from onNdefPushComplete */
-    private final Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-            case MESSAGE_SENT:
-            	mNfcAdapter.setNdefPushMessageCallback(null, why);
-  			  	Log.i(TAG, "No potato!");
-            	player.setHasString(false);
-            	List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+	/**
+	 * Implementation for the OnNdefPushCompleteCallback interface
+	 */
+	@Override
+	public void onNdefPushComplete(NfcEvent arg0) {
+		// A handler is needed to send messages to the activity when this
+		// callback occurs, because it happens from a binder thread
+		mHandler.obtainMessage(MESSAGE_SENT).sendToTarget();
+	}
+
+	/** This handler receives a message from onNdefPushComplete */
+	private final Handler mHandler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+			case MESSAGE_SENT:
+				mNfcAdapter.setNdefPushMessageCallback(null, why);
+				Log.i(TAG, "No potato!");
+				player.setHasString(false);
+				List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 				pairs.add(new BasicNameValuePair(Constants.potatoId, ""));
-				pairs.add(new BasicNameValuePair(Constants.holder, usernameText.getText()
-						.toString()));
-				pairs.add(new BasicNameValuePair(Constants.score, player.getScore()+""));
-				pairs.add(new BasicNameValuePair(Constants.temp, 0+""));
-				pairs.add(new BasicNameValuePair(Constants.lat, player.getLat()+""));
-				pairs.add(new BasicNameValuePair(Constants.lng, player.getLng()+""));
-				
-            	UserLoginTask task = new UserLoginTask(true, username, password, pairs, true, false);
-            	task.execute(Constants.updatePlayerInfo);
-                Toast.makeText(getApplicationContext(), "Potato passed!", Toast.LENGTH_LONG).show();
-                break;
-            }
-        }
-    };
-    
-    /**
-     * Creates a custom MIME type encapsulated in an NDEF record
-     *
-     * @param mimeType
-     */
-    public NdefRecord createMimeRecord(String mimeType, byte[] payload) {
-        byte[] mimeBytes = mimeType.getBytes(Charset.forName("US-ASCII"));
-        NdefRecord mimeRecord = new NdefRecord(
-                NdefRecord.TNF_MIME_MEDIA, mimeBytes, new byte[0], payload);
-        return mimeRecord;
-    }
-    
-    @Override
-    public void onResume() {
-        super.onResume();
-        mNfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFiltersArray, null);
+				pairs.add(new BasicNameValuePair(Constants.holder, usernameText
+						.getText().toString()));
+				pairs.add(new BasicNameValuePair(Constants.score, player
+						.getScore() + ""));
+				pairs.add(new BasicNameValuePair(Constants.temp, 0 + ""));
+				pairs.add(new BasicNameValuePair(Constants.lat, player.getLat()
+						+ ""));
+				pairs.add(new BasicNameValuePair(Constants.lng, player.getLng()
+						+ ""));
 
-        Log.i(TAG, "OnResume: " + username + " password: " + password + " gameObj: " + gameObj);
-        // Check to see that the Activity started due to an Android Beam
-        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
-            processIntent(getIntent());
-        }
-    }
-    
-    @Override
-    public void onPause() {
-        super.onPause();
-        mNfcAdapter.disableForegroundDispatch(this);
-        Log.i(TAG, "ONPUASE " + username + " password: " + password + " gameObj: " + gameObj);
-    }
-    
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-      super.onSaveInstanceState(savedInstanceState);
-      // Save UI state changes to the savedInstanceState.
-      // This bundle will be passed to onCreate if the process is
-      // killed and restarted.
-      Log.i(TAG, "SAVEDINSTANCESTATE: " + username + " password: " + password + " gameObj: " + gameObj);
+				UserLoginTask task = new UserLoginTask(true, username,
+						password, pairs, true, false);
+				task.execute(Constants.updatePlayerInfo);
+				Toast.makeText(getApplicationContext(), "Potato passed!",
+						Toast.LENGTH_LONG).show();
+				break;
+			}
+		}
+	};
 
-      savedInstanceState.putString("username", username);
-      savedInstanceState.putString("password", password);
-      savedInstanceState.putSerializable("gameObj", gameObj);
-      savedInstanceState.putSerializable("player", player);
-      // etc.
-    }
-    
+	/**
+	 * Creates a custom MIME type encapsulated in an NDEF record
+	 * 
+	 * @param mimeType
+	 */
+	public NdefRecord createMimeRecord(String mimeType, byte[] payload) {
+		byte[] mimeBytes = mimeType.getBytes(Charset.forName("US-ASCII"));
+		NdefRecord mimeRecord = new NdefRecord(NdefRecord.TNF_MIME_MEDIA,
+				mimeBytes, new byte[0], payload);
+		return mimeRecord;
+	}
 
-    @Override
-    public void onNewIntent(Intent intent) {
-        // onResume gets called after this to handle the intent
-    	Log.i(TAG, "OnNewIntent: " + username + " password: " + password + " gameObj: " + gameObj);
-    	
-    	intent.putExtra("username", username);
-    	intent.putExtra("password", password);
-    	intent.putExtra("gameObj", gameObj);
-    	intent.putExtra("player", player);
-        setIntent(intent);
-    }
+	@Override
+	public void onResume() {
+		super.onResume();
+		mNfcAdapter.enableForegroundDispatch(this, pendingIntent,
+				intentFiltersArray, null);
 
-    /**
-     * Parses the NDEF Message from the intent and prints to the TextView
-     */
-    void processIntent(Intent intent) {
-        Parcelable[] rawMsgs = intent.getParcelableArrayExtra(
-                NfcAdapter.EXTRA_NDEF_MESSAGES);
-        // only one message sent during the beam
-        NdefMessage msg = (NdefMessage) rawMsgs[0];
-        // record 0 contains the MIME type, record 1 is the AAR, if present
-        Toast.makeText(getApplicationContext(), new String(msg.getRecords()[0].getPayload()), Toast.LENGTH_SHORT).show();
-//        mInfoText.setText(new String(msg.getRecords()[0].getPayload()));
-        String results = new String(msg.getRecords()[0].getPayload());
-        String[] arr = results.split(" ");
-        player.setHasString(true);
-        List<String> potatoList = new ArrayList<String>();
-        potatoList.add(arr[1]);
-        player.setPotatoList(potatoList);
-        List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+		Log.i(TAG, "OnResume: " + username + " password: " + password
+				+ " gameObj: " + gameObj);
+		// Check to see that the Activity started due to an Android Beam
+		if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
+			processIntent(getIntent());
+		}
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		mNfcAdapter.disableForegroundDispatch(this);
+		Log.i(TAG, "ONPUASE " + username + " password: " + password
+				+ " gameObj: " + gameObj);
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		super.onSaveInstanceState(savedInstanceState);
+		// Save UI state changes to the savedInstanceState.
+		// This bundle will be passed to onCreate if the process is
+		// killed and restarted.
+		Log.i(TAG, "SAVEDINSTANCESTATE: " + username + " password: " + password
+				+ " gameObj: " + gameObj);
+
+		savedInstanceState.putString("username", username);
+		savedInstanceState.putString("password", password);
+		savedInstanceState.putSerializable("gameObj", gameObj);
+		savedInstanceState.putSerializable("player", player);
+		// etc.
+	}
+
+	@Override
+	public void onNewIntent(Intent intent) {
+		// onResume gets called after this to handle the intent
+		Log.i(TAG, "OnNewIntent: " + username + " password: " + password
+				+ " gameObj: " + gameObj);
+
+		intent.putExtra("username", username);
+		intent.putExtra("password", password);
+		intent.putExtra("gameObj", gameObj);
+		intent.putExtra("player", player);
+		setIntent(intent);
+	}
+
+	/**
+	 * Parses the NDEF Message from the intent and prints to the TextView
+	 */
+	void processIntent(Intent intent) {
+		Parcelable[] rawMsgs = intent
+				.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+		// only one message sent during the beam
+		NdefMessage msg = (NdefMessage) rawMsgs[0];
+		// record 0 contains the MIME type, record 1 is the AAR, if present
+		Toast.makeText(getApplicationContext(),
+				new String(msg.getRecords()[0].getPayload()),
+				Toast.LENGTH_SHORT).show();
+		// mInfoText.setText(new String(msg.getRecords()[0].getPayload()));
+		String results = new String(msg.getRecords()[0].getPayload());
+		String[] arr = results.split(" ");
+		player.setHasString(true);
+		List<String> potatoList = new ArrayList<String>();
+		potatoList.add(arr[1]);
+		player.setPotatoList(potatoList);
+		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 		pairs.add(new BasicNameValuePair(Constants.potatoId, arr[1]));
 		pairs.add(new BasicNameValuePair(Constants.holder, arr[0]));
-		pairs.add(new BasicNameValuePair(Constants.score, player.getScore()+""));
-		pairs.add(new BasicNameValuePair(Constants.temp, 0+""));
-		pairs.add(new BasicNameValuePair(Constants.lat, player.getLat()+""));
-		pairs.add(new BasicNameValuePair(Constants.lng, player.getLng()+""));
-		
-    	UserLoginTask task = new UserLoginTask(true, username, password, pairs, true, false);
-    	task.execute(Constants.updatePlayerInfo);
-        Toast.makeText(getApplicationContext(), "Potato passed!", Toast.LENGTH_LONG).show();
-    }
-    
-    
-    public class UserLoginTask extends WebTask {
+		pairs.add(new BasicNameValuePair(Constants.score, player.getScore()
+				+ ""));
+		pairs.add(new BasicNameValuePair(Constants.temp, 0 + ""));
+		pairs.add(new BasicNameValuePair(Constants.lat, player.getLat() + ""));
+		pairs.add(new BasicNameValuePair(Constants.lng, player.getLng() + ""));
+
+		UserLoginTask task = new UserLoginTask(true, username, password, pairs,
+				true, false);
+		task.execute(Constants.updatePlayerInfo);
+		Toast.makeText(getApplicationContext(), "Potato passed!",
+				Toast.LENGTH_LONG).show();
+	}
+
+	public class UserLoginTask extends WebTask {
 		public UserLoginTask(boolean hasPairs, String username,
-				String password, List<NameValuePair> pairs, boolean isPost, boolean lobby) {
+				String password, List<NameValuePair> pairs, boolean isPost,
+				boolean lobby) {
 			super(hasPairs, username, password, pairs, isPost, lobby);
 		}
-
 
 		@Override
 		protected void onPostExecute(String result) {
 			ResponseObject resp = new ResponseObject();
 			resp.success = false;
 			try {
-				resp = ResponseObject.createResponse(result, this.lobby, usernameText.getText().toString());
-				System.out.println("response: " + resp.success + " "+resp.game);
+				resp = ResponseObject.createResponse(result, this.lobby,
+						usernameText.getText().toString());
+				System.out.println("response: " + resp.success + " "
+						+ resp.game);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
 			if (resp.success) {
 				Intent intent = null;
-				intent = new Intent(getApplicationContext(), HomeScreenActivity.class);
+				intent = new Intent(getApplicationContext(),
+						HomeScreenActivity.class);
 				intent.putExtra(Constants.response, resp);
-				Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), "Success!",
+						Toast.LENGTH_SHORT).show();
 				intent.putExtra("username", username);
 				intent.putExtra("password", password);
 				intent.putExtra("gameObj", gameObj);
 				intent.putExtra("player", player);
 				finish();
 				startActivity(intent);
-			} 
+			}
 		}
 	}
-    
-    @Override
-    public void onLocationChanged(Location loc)
-    {
-        player.lat = loc.getLatitude();
-        player.lng = loc.getLongitude();
-    }
 
-    @Override
-    public void onProviderDisabled(String provider)
-    {
-      Toast.makeText( getApplicationContext(), "Gps Disabled", Toast.LENGTH_SHORT ).show();
-    }
+	@Override
+	public void onLocationChanged(Location loc) {
+		player.lat = loc.getLatitude();
+		player.lng = loc.getLongitude();
+	}
 
-    @Override
-    public void onProviderEnabled(String provider)
-    {
-      Toast.makeText( getApplicationContext(), "Gps Enabled", Toast.LENGTH_SHORT).show();
-    }
+	@Override
+	public void onProviderDisabled(String provider) {
+		Toast.makeText(getApplicationContext(), "Gps Disabled",
+				Toast.LENGTH_SHORT).show();
+	}
 
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras)
-    {
+	@Override
+	public void onProviderEnabled(String provider) {
+		Toast.makeText(getApplicationContext(), "Gps Enabled",
+				Toast.LENGTH_SHORT).show();
+	}
 
-    }
-    
-    public Location getLocation() {
-        Location location = null;
-        // Log.e(TAG, "Get Location");
-         try {
+	@Override
+	public void onStatusChanged(String provider, int status, Bundle extras) {
 
-            // getting GPS status
-            boolean isGPSEnabled = mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+	}
 
-            // getting network status
-            boolean isNetworkEnabled = mlocManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+	public Location getLocation() {
+		Location location = null;
+		// Log.e(TAG, "Get Location");
+		try {
 
-            if (!isGPSEnabled && !isNetworkEnabled) {
-                // no network provider is enabled
-            } else {
-                this.canGetLocation = true;
-                // First get location from Network Provider
-                if (isNetworkEnabled) {
-                    mlocManager.requestLocationUpdates(
-                            LocationManager.NETWORK_PROVIDER,
-                            MIN_TIME_BW_UPDATES,
-                            MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
- // Log.d("Network", "Network");
-                    if (mlocManager != null) {
-                        location = mlocManager
-                                .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                        if (location != null) {
-                            player.lat = location.getLatitude();
-                            player.lng = location.getLongitude();
-                        }
-                    }
-                }
-                // if GPS Enabled get lat/long using GPS Services
-                if (isGPSEnabled) {
-                    if (location == null) {
-                          mlocManager.requestLocationUpdates(
-                                LocationManager.GPS_PROVIDER,
-                                MIN_TIME_BW_UPDATES,
-                                MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
- // Log.d("GPS Enabled", "GPS Enabled");
-                        if (mlocManager != null) {
-                            location = mlocManager
-                                    .getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                            if (location != null) {
-                                player.lat = location.getLatitude();
-                                player.lng = location.getLongitude();
-                            }
-                        }
-                    }
-                }
-            }
+			// getting GPS status
+			boolean isGPSEnabled = mlocManager
+					.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+			// getting network status
+			boolean isNetworkEnabled = mlocManager
+					.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
-        return location;
-    }
-    
-    Runnable dynamicPoll = new Runnable(){
+			if (!isGPSEnabled && !isNetworkEnabled) {
+				// no network provider is enabled
+			} else {
+				this.canGetLocation = true;
+				// First get location from Network Provider
+				if (isNetworkEnabled) {
+					mlocManager.requestLocationUpdates(
+							LocationManager.NETWORK_PROVIDER,
+							MIN_TIME_BW_UPDATES,
+							MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+					// Log.d("Network", "Network");
+					if (mlocManager != null) {
+						location = mlocManager
+								.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+						if (location != null) {
+							player.lat = location.getLatitude();
+							player.lng = location.getLongitude();
+						}
+					}
+				}
+				// if GPS Enabled get lat/long using GPS Services
+				if (isGPSEnabled) {
+					if (location == null) {
+						mlocManager.requestLocationUpdates(
+								LocationManager.GPS_PROVIDER,
+								MIN_TIME_BW_UPDATES,
+								MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+						// Log.d("GPS Enabled", "GPS Enabled");
+						if (mlocManager != null) {
+							location = mlocManager
+									.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+							if (location != null) {
+								player.lat = location.getLatitude();
+								player.lng = location.getLongitude();
+							}
+						}
+					}
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return location;
+	}
+
+	Runnable dynamicPoll = new Runnable() {
 
 		@Override
 		public void run() {
 			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-			if(player.isHasString()){
-				pairs.add(new BasicNameValuePair(Constants.potatoId, player.getPotatoList().get(0)));
-				pairs.add(new BasicNameValuePair(Constants.temp, gameObj.getPotato().get(0).getTemp()+""));
-			}else{
+			if (player.isHasString()) {
+				pairs.add(new BasicNameValuePair(Constants.potatoId, player
+						.getPotatoList().get(0)));
+				pairs.add(new BasicNameValuePair(Constants.temp, gameObj
+						.getPotato().get(0).getTemp()
+						+ ""));
+			} else {
 				pairs.add(new BasicNameValuePair(Constants.potatoId, ""));
-				pairs.add(new BasicNameValuePair(Constants.temp, 0+""));
+				pairs.add(new BasicNameValuePair(Constants.temp, 0 + ""));
 			}
 			pairs.add(new BasicNameValuePair(Constants.holder, username));
-			pairs.add(new BasicNameValuePair(Constants.score, player.getScore()+""));
-			
-			pairs.add(new BasicNameValuePair(Constants.lat, player.getLat()+""));
-			pairs.add(new BasicNameValuePair(Constants.lng, player.getLng()+""));
-			
-        	UserLoginTask task = new UserLoginTask(true, username, password, pairs, true, false);
-        	task.execute(Constants.updatePlayerInfo);
-        	long temp = (long)gameObj.getPotato().get(0).getTemp();
-        	long delay = gameObj.getMaxRoundTime()/ temp / 10;
-        	mHandler.postDelayed(this, delay);
+			pairs.add(new BasicNameValuePair(Constants.score, player.getScore()
+					+ ""));
+
+			pairs.add(new BasicNameValuePair(Constants.lat, player.getLat()
+					+ ""));
+			pairs.add(new BasicNameValuePair(Constants.lng, player.getLng()
+					+ ""));
+
+			UserLoginTask task = new UserLoginTask(true, username, password,
+					pairs, true, false);
+			task.execute(Constants.updatePlayerInfo);
+			long temp = (long) gameObj.getPotato().get(0).getTemp();
+			long delay = gameObj.getMaxRoundTime() / temp / 10;
+			mHandler.postDelayed(this, delay);
 		}
-    	
-    };
+
+	};
 }
