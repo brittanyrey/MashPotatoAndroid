@@ -381,7 +381,6 @@ public class HomeScreenActivity extends Activity implements
 	/**
 	 * Implementation for the OnNdefPushCompleteCallback interface
 	 */
-	@Override
 	public void onNdefPushComplete(NfcEvent arg0) {
 		// A handler is needed to send messages to the activity when this
 		// callback occurs, because it happens from a binder thread

@@ -39,6 +39,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Toast;
 
 public class GameJoinActivity extends Activity {
 
@@ -58,6 +59,7 @@ public class GameJoinActivity extends Activity {
 	private Game gameObj;
 
 	private ResponseObject resObj;
+	private ResponseObject joinObj;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -87,27 +89,47 @@ public class GameJoinActivity extends Activity {
 		join_start_Button.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				System.out.println("start/join clicked");
+				if (!gameObj.getOwner().equals(username)) {
+					Thread thread = new Thread(new Runnable() {
+						@Override
+						public void run() {
+							joinOrStartGame();
+						}
+					});
+					thread.start();
 
-				Thread thread = new Thread(new Runnable() {
-					@Override
-					public void run() {
-						joinOrStartGame();
+					try {
+						thread.join();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
 					}
-				});
-				thread.start();
 
-				try {
-					thread.join();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+					loadLV();
+					updateInfo();
+					ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+							getApplicationContext(),
+							android.R.layout.simple_list_item_1, finalList);
+					lv.setAdapter(arrayAdapter);
+				} else {
+					if (gameObj.getPlayers().size() < 3){
+						Toast.makeText(getApplicationContext(), "Games must have at least 3 players.",
+								   Toast.LENGTH_LONG).show();
+					}
+					else{
+					Thread thread = new Thread(new Runnable() {
+						@Override
+						public void run() {
+							joinOrStartGame();
+						}
+					});
+					thread.start();
+
+					try {
+						thread.join();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}}
 				}
-				loadLV();
-				updateInfo();
-
-				ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-						getApplicationContext(),
-						android.R.layout.simple_list_item_1, finalList);
-				lv.setAdapter(arrayAdapter);
 			}
 		});
 	}
@@ -154,11 +176,11 @@ public class GameJoinActivity extends Activity {
 			String result = EntityUtils.toString(responseEntity);
 			System.out.println(result);
 
-			resObj = ResponseObject.createResponse(result, false, username);
+			resObj = ResponseObject.createResponse(result, true, username);
 			System.out.println("response: " + resObj.success + " "
 					+ resObj.game);
 
-			gameObj = resObj.game;
+			gameObj = resObj.lobbyList.get(0);
 
 		} catch (ClientProtocolException e) {
 		} catch (IOException e) {
@@ -192,12 +214,14 @@ public class GameJoinActivity extends Activity {
 			String content = EntityUtils.toString(responseEntity);
 
 			resObj = ResponseObject.createResponse(content, false, username);
+			System.out.println("start game: " + content);
 			gameObj = resObj.game;
 		} catch (ClientProtocolException e) {
 		} catch (IOException e) {
 		} catch (AuthenticationException e1) {
 			e1.printStackTrace();
 		} catch (JSONException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		Intent intent = new Intent(getApplicationContext(),
@@ -205,6 +229,7 @@ public class GameJoinActivity extends Activity {
 		intent.putExtra("username", username.toString());
 		intent.putExtra("password", password.toString());
 		intent.putExtra("gameObj", gameObj);
+		intent.putExtra("player", resObj.me);
 		finish();
 		startActivity(intent);
 	}
@@ -232,8 +257,8 @@ public class GameJoinActivity extends Activity {
 
 			String content = EntityUtils.toString(responseEntity);
 
-			resObj = ResponseObject.createResponse(content, false, username);
-			gameObj = resObj.game;
+			resObj = ResponseObject.createResponse(content, true, username);
+			gameObj = resObj.lobbyList.get(0);
 		} catch (ClientProtocolException e) {
 		} catch (IOException e) {
 		} catch (AuthenticationException e1) {
@@ -281,7 +306,7 @@ public class GameJoinActivity extends Activity {
 					JoinActivity.class);
 			intent.putExtra("username", username);
 			intent.putExtra("password", password);
-			intent.putExtra("gameObj", loadJoinLV());
+			intent.putExtra("gameObj", joinObj);
 			finish();
 			startActivity(intent);
 			return true;
@@ -289,7 +314,7 @@ public class GameJoinActivity extends Activity {
 		return super.onKeyDown(keyCode, event);
 	}
 
-	private ResponseObject loadJoinLV() {
+	private void loadJoinLV() {
 		System.out.println(username);
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpPost httppost = new HttpPost(Constants.gameLobby);
@@ -313,9 +338,7 @@ public class GameJoinActivity extends Activity {
 
 			String content = EntityUtils.toString(responseEntity);
 
-			resObj = ResponseObject.createResponse(content, false, username);
-			
-			return resObj; 
+			joinObj = ResponseObject.createResponse(content, true, username);
 
 		} catch (ClientProtocolException e) {
 		} catch (IOException e) {
@@ -324,6 +347,5 @@ public class GameJoinActivity extends Activity {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		return null;
 	}
 }
