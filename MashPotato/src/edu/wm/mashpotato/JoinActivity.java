@@ -70,19 +70,6 @@ public class JoinActivity extends Activity {
 		lv = (ListView) findViewById(R.id.listView1);
 		instructions = (TextView) findViewById(R.id.instructions);
 
-		// Load list view
-		// Thread thread = new Thread(new Runnable() {
-		// @Override
-		// public void run() {
-		// loadLV();
-		// }
-		// });
-		// thread.start();
-		// try {
-		// thread.join();
-		// } catch (InterruptedException e) {
-		// e.printStackTrace();
-		// }
 		initialLoadLV();
 
 		ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,
@@ -127,52 +114,12 @@ public class JoinActivity extends Activity {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			Intent intent = new Intent(getApplicationContext(),
 					InitGameActivity.class);
+			intent.putExtra("username", username);
+			intent.putExtra("password", password);
 			finish();
 			startActivity(intent);
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
-	}
-
-	private void loadLV() {
-		System.out.println(username);
-		HttpClient httpclient = new DefaultHttpClient();
-		HttpPost httppost = new HttpPost(Constants.gameLobby);
-		UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(
-				username, password);
-		BasicScheme scheme = new BasicScheme();
-		Header authorizationHeader;
-		try {
-			authorizationHeader = scheme.authenticate(credentials, httppost);
-			httppost.addHeader(authorizationHeader);
-
-			// Add data
-			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-			nameValuePairs.add(new BasicNameValuePair("lat", "0"));
-			nameValuePairs.add(new BasicNameValuePair("lng", "0"));
-			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-			// Execute HTTP Post Request
-			HttpResponse httpresponse = httpclient.execute(httppost);
-			HttpEntity responseEntity = httpresponse.getEntity();
-
-			String content = EntityUtils.toString(responseEntity);
-
-			resObj = ResponseObject.createResponse(content, true, username);
-
-			for (int x = 0; x < resObj.lobbyList.size(); x++) {
-				finalList.add(resObj.lobbyList.get(x).getId());
-				// resObj.lobbyList.get(x).getOwner() +
-				// " Location: "+resObj.lobbyList.get(x).getOriginalLocation());
-			}
-
-		} catch (ClientProtocolException e) {
-		} catch (IOException e) {
-		} catch (AuthenticationException e1) {
-			e1.printStackTrace();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 }

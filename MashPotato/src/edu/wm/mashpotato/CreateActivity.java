@@ -16,8 +16,10 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
 
 import edu.wm.mashpotato.web.Constants;
+import edu.wm.mashpotato.web.ResponseObject;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -77,6 +79,12 @@ public class CreateActivity extends Activity {
 					System.out.println("join a game");
 					Intent intent = new Intent(getApplicationContext(),
 							JoinActivity.class);
+					try {
+						intent.putExtra("gameObj", ResponseObject.createResponse(response, false, username));
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					intent.putExtra("username", username);
 					intent.putExtra("password", password);
 					finish();
@@ -126,6 +134,8 @@ public class CreateActivity extends Activity {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			Intent intent = new Intent(getApplicationContext(),
 					InitGameActivity.class);
+			intent.putExtra("username", username);
+			intent.putExtra("password", password);
 			finish();
 			startActivity(intent);
 			return true;

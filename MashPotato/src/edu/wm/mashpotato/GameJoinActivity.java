@@ -57,7 +57,7 @@ public class GameJoinActivity extends Activity {
 	private String password;
 	private Game gameObj;
 
-	private boolean admin = true;// TODO GET RID OF AND CALL FOR THIS INFO
+	private ResponseObject resObj;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +71,6 @@ public class GameJoinActivity extends Activity {
 			gameObj = (Game) extras.get("gameObj");
 		}
 
-		finalList = new ArrayList<String>();
 		lv = (ListView) findViewById(R.id.listView1);
 		instructions = (TextView) findViewById(R.id.instructions);
 		maxPotatoes = (TextView) findViewById(R.id.numPotatoes);
@@ -102,6 +101,12 @@ public class GameJoinActivity extends Activity {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
+				loadLV();
+				updateInfo();
+
+				ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getApplicationContext(),
+						android.R.layout.simple_list_item_1, finalList);
+				lv.setAdapter(arrayAdapter);
 			}
 		});
 	}
@@ -144,17 +149,22 @@ public class GameJoinActivity extends Activity {
 			// Execute HTTP Post Request
 			HttpResponse httpresponse = httpclient.execute(httppost);
 			HttpEntity responseEntity = httpresponse.getEntity();
+			
+			String result = EntityUtils.toString(responseEntity);
+			System.out.println(result);
+			
+			resObj = ResponseObject.createResponse(result, false, username);
+			System.out.println("response: " + resObj.success + " "+ resObj.game);
+			
+			gameObj = resObj.game;
+			
 		} catch (ClientProtocolException e) {
 		} catch (IOException e) {
 		} catch (AuthenticationException e1) {
 			e1.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
-		loadLV();
-		updateInfo();
-
-		ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_list_item_1, finalList);
-		lv.setAdapter(arrayAdapter);
 	}
 
 	private void startGame() {
@@ -177,10 +187,16 @@ public class GameJoinActivity extends Activity {
 			// Execute HTTP Post Request
 			HttpResponse httpresponse = httpclient.execute(httppost);
 			HttpEntity responseEntity = httpresponse.getEntity();
+			String content = EntityUtils.toString(responseEntity);
+
+			resObj = ResponseObject.createResponse(content, false, username);
+			gameObj = resObj.game;
 		} catch (ClientProtocolException e) {
 		} catch (IOException e) {
 		} catch (AuthenticationException e1) {
 			e1.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
 		Intent intent = new Intent(getApplicationContext(),
 				HomeScreenActivity.class);
@@ -211,17 +227,18 @@ public class GameJoinActivity extends Activity {
 			// Execute HTTP Post Request
 			HttpResponse httpresponse = httpclient.execute(httppost);
 			HttpEntity responseEntity = httpresponse.getEntity();
+			
+			String content = EntityUtils.toString(responseEntity);
+			
+			resObj = ResponseObject.createResponse(content, false, username);
+			gameObj = resObj.game;	
 		} catch (ClientProtocolException e) {
 		} catch (IOException e) {
 		} catch (AuthenticationException e1) {
 			e1.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
-		loadLV();
-		updateInfo();
-
-		ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_list_item_1, finalList);
-		lv.setAdapter(arrayAdapter);
 	}
 
 	private void updateInfo() {
@@ -236,6 +253,7 @@ public class GameJoinActivity extends Activity {
 	}
 
 	private void loadLV() {
+		finalList = new ArrayList<String>();
 		for (int x = 0; x < gameObj.getPlayers().size(); x++) {
 			finalList.add(gameObj.getPlayers().get(x).getId());
 		}
@@ -244,14 +262,64 @@ public class GameJoinActivity extends Activity {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			Thread thread = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					loadJoinLV();
+				}
+			});
+			thread.start();
+			try {
+				thread.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
 			Intent intent = new Intent(getApplicationContext(),
 					JoinActivity.class);
 			intent.putExtra("username", username);
 			intent.putExtra("password", password);
+			intent.putExtra("gameObj", resObj);			
 			finish();
 			startActivity(intent);
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
+	}
+	
+	private void loadJoinLV() {
+		System.out.println(username);
+		HttpClient httpclient = new DefaultHttpClient();
+		HttpPost httppost = new HttpPost(Constants.gameLobby);
+		UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(
+				username, password);
+		BasicScheme scheme = new BasicScheme();
+		Header authorizationHeader;
+		try {
+			authorizationHeader = scheme.authenticate(credentials, httppost);
+			httppost.addHeader(authorizationHeader);
+
+			// Add data
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+			nameValuePairs.add(new BasicNameValuePair("lat", "0"));
+			nameValuePairs.add(new BasicNameValuePair("lng", "0"));
+			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+			// Execute HTTP Post Request
+			HttpResponse httpresponse = httpclient.execute(httppost);
+			HttpEntity responseEntity = httpresponse.getEntity();
+
+			String content = EntityUtils.toString(responseEntity);
+
+			resObj = ResponseObject.createResponse(content, false, username);
+			gameObj = resObj.game;
+
+		} catch (ClientProtocolException e) {
+		} catch (IOException e) {
+		} catch (AuthenticationException e1) {
+			e1.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 }

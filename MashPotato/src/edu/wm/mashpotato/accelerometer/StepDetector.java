@@ -61,7 +61,6 @@ public class StepDetector implements SensorEventListener
         mStepListeners.add(sl);
     }
     
-    //public void onSensorChanged(int sensor, float[] values) {
     public void onSensorChanged(SensorEvent event) {
         Sensor sensor = event.sensor; 
         synchronized (this) {
