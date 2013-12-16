@@ -14,7 +14,7 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+ 
 
 package edu.wm.mashpotato.accelerometer;
 
@@ -22,13 +22,13 @@ import edu.wm.mashpotato.R;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
-/**
+*//**
  * Activity for Pedometer settings.
  * Started when the user click Settings from the main menu.
  * @author Levente Bagi
- */
+ *//*
 public class Settings extends PreferenceActivity {
-    /** Called when the activity is first created. */
+    *//** Called when the activity is first created. *//*
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,3 +36,4 @@ public class Settings extends PreferenceActivity {
         addPreferencesFromResource(R.xml.preferences);
     }
 }
+*/

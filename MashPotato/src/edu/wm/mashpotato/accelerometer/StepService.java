@@ -54,7 +54,7 @@ import android.widget.Toast;
 public class StepService extends Service {
 	private static final String TAG = "name.bagi.levente.pedometer.StepService";
     private SharedPreferences mSettings;
-    private PedometerSettings mPedometerSettings;
+   // private PedometerSettings mPedometerSettings;
     private SharedPreferences mState;
     private SharedPreferences.Editor mStateEditor;
     private Utils mUtils;
@@ -63,20 +63,20 @@ public class StepService extends Service {
     private StepDetector mStepDetector;
     // private StepBuzzer mStepBuzzer; // used for debugging
     private StepDisplayer mStepDisplayer;
-    private PaceNotifier mPaceNotifier;
+   /* private PaceNotifier mPaceNotifier;
     private DistanceNotifier mDistanceNotifier;
     private SpeedNotifier mSpeedNotifier;
     private CaloriesNotifier mCaloriesNotifier;
-    private SpeakingTimer mSpeakingTimer;
+    private SpeakingTimer mSpeakingTimer;*/
     
     private PowerManager.WakeLock wakeLock;
     private NotificationManager mNM;
 
     private int mSteps;
-    private int mPace;
+  /*  private int mPace;
     private float mDistance;
     private float mSpeed;
-    private float mCalories;
+    private float mCalories;*/
     
     /**
      * Class for clients to access.  Because we know this service always
@@ -99,14 +99,14 @@ public class StepService extends Service {
         
         // Load settings
         mSettings = PreferenceManager.getDefaultSharedPreferences(this);
-        mPedometerSettings = new PedometerSettings(mSettings);
+        //mPedometerSettings = new PedometerSettings(mSettings);
         mState = getSharedPreferences("state", 0);
 
         mUtils = Utils.getInstance();
         mUtils.setService(this);
         mUtils.initTTS();
 
-        acquireWakeLock();
+      //  acquireWakeLock();
         
         // Start detecting
         mStepDetector = new StepDetector();
@@ -118,12 +118,12 @@ public class StepService extends Service {
         IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
         registerReceiver(mReceiver, filter);
 
-        mStepDisplayer = new StepDisplayer(mPedometerSettings, mUtils);
+     //   mStepDisplayer = new StepDisplayer(mPedometerSettings, mUtils);
         mStepDisplayer.setSteps(mSteps = mState.getInt("steps", 0));
         mStepDisplayer.addListener(mStepListener);
         mStepDetector.addStepListener(mStepDisplayer);
 
-        mPaceNotifier     = new PaceNotifier(mPedometerSettings, mUtils);
+       /* mPaceNotifier     = new PaceNotifier(mPedometerSettings, mUtils);
         mPaceNotifier.setPace(mPace = mState.getInt("pace", 0));
         mPaceNotifier.addListener(mPaceListener);
         mStepDetector.addStepListener(mPaceNotifier);
@@ -138,15 +138,15 @@ public class StepService extends Service {
         
         mCaloriesNotifier = new CaloriesNotifier(mCaloriesListener, mPedometerSettings, mUtils);
         mCaloriesNotifier.setCalories(mCalories = mState.getFloat("calories", 0));
-        mStepDetector.addStepListener(mCaloriesNotifier);
+        mStepDetector.addStepListener(mCaloriesNotifier);*/
         
-        mSpeakingTimer = new SpeakingTimer(mPedometerSettings, mUtils);
+        /*  mSpeakingTimer = new SpeakingTimer(mPedometerSettings, mUtils);
         mSpeakingTimer.addListener(mStepDisplayer);
         mSpeakingTimer.addListener(mPaceNotifier);
         mSpeakingTimer.addListener(mDistanceNotifier);
         mSpeakingTimer.addListener(mSpeedNotifier);
         mSpeakingTimer.addListener(mCaloriesNotifier);
-        mStepDetector.addStepListener(mSpeakingTimer);
+        mStepDetector.addStepListener(mSpeakingTimer);*/
         
         // Used when debugging:
         // mStepBuzzer = new StepBuzzer(this);
@@ -176,10 +176,10 @@ public class StepService extends Service {
         
         mStateEditor = mState.edit();
         mStateEditor.putInt("steps", mSteps);
-        mStateEditor.putInt("pace", mPace);
+      /*  mStateEditor.putInt("pace", mPace);
         mStateEditor.putFloat("distance", mDistance);
         mStateEditor.putFloat("speed", mSpeed);
-        mStateEditor.putFloat("calories", mCalories);
+        mStateEditor.putFloat("calories", mCalories);*/
         mStateEditor.commit();
         
         mNM.cancel(R.string.app_name);
@@ -222,10 +222,6 @@ public class StepService extends Service {
 
     public interface ICallback {
         public void stepsChanged(int value);
-        public void paceChanged(int value);
-        public void distanceChanged(float value);
-        public void speedChanged(float value);
-        public void caloriesChanged(float value);
     }
     
     private ICallback mCallback;
@@ -236,31 +232,31 @@ public class StepService extends Service {
         //mPaceListener.passValue();
     }
     
-    private int mDesiredPace;
+  /*  private int mDesiredPace;
     private float mDesiredSpeed;
     
-    /**
+    *//**
      * Called by activity to pass the desired pace value, 
      * whenever it is modified by the user.
      * @param desiredPace
-     */
+     *//*
     public void setDesiredPace(int desiredPace) {
         mDesiredPace = desiredPace;
         if (mPaceNotifier != null) {
             mPaceNotifier.setDesiredPace(mDesiredPace);
         }
     }
-    /**
+    *//**
      * Called by activity to pass the desired speed value, 
      * whenever it is modified by the user.
      * @param desiredSpeed
-     */
+     *//*
     public void setDesiredSpeed(float desiredSpeed) {
         mDesiredSpeed = desiredSpeed;
         if (mSpeedNotifier != null) {
             mSpeedNotifier.setDesiredSpeed(mDesiredSpeed);
         }
-    }
+    }*/
     
     public void reloadSettings() {
         mSettings = PreferenceManager.getDefaultSharedPreferences(this);
@@ -272,19 +268,19 @@ public class StepService extends Service {
         }
         
         if (mStepDisplayer    != null) mStepDisplayer.reloadSettings();
-        if (mPaceNotifier     != null) mPaceNotifier.reloadSettings();
+        /*if (mPaceNotifier     != null) mPaceNotifier.reloadSettings();
         if (mDistanceNotifier != null) mDistanceNotifier.reloadSettings();
         if (mSpeedNotifier    != null) mSpeedNotifier.reloadSettings();
         if (mCaloriesNotifier != null) mCaloriesNotifier.reloadSettings();
-        if (mSpeakingTimer    != null) mSpeakingTimer.reloadSettings();
+        if (mSpeakingTimer    != null) mSpeakingTimer.reloadSettings();*/
     }
     
     public void resetValues() {
         mStepDisplayer.setSteps(0);
-        mPaceNotifier.setPace(0);
+       /* mPaceNotifier.setPace(0);
         mDistanceNotifier.setDistance(0);
         mSpeedNotifier.setSpeed(0);
-        mCaloriesNotifier.setCalories(0);
+        mCaloriesNotifier.setCalories(0);*/
     }
     
     /**
@@ -304,7 +300,7 @@ public class StepService extends Service {
     /**
      * Forwards pace values from PaceNotifier to the activity. 
      */
-    private PaceNotifier.Listener mPaceListener = new PaceNotifier.Listener() {
+    /*private PaceNotifier.Listener mPaceListener = new PaceNotifier.Listener() {
         public void paceChanged(int value) {
             mPace = value;
             passValue();
@@ -315,9 +311,9 @@ public class StepService extends Service {
             }
         }
     };
-    /**
+    *//**
      * Forwards distance values from DistanceNotifier to the activity. 
-     */
+     *//*
     private DistanceNotifier.Listener mDistanceListener = new DistanceNotifier.Listener() {
         public void valueChanged(float value) {
             mDistance = value;
@@ -329,9 +325,9 @@ public class StepService extends Service {
             }
         }
     };
-    /**
+    *//**
      * Forwards speed values from SpeedNotifier to the activity. 
-     */
+     *//*
     private SpeedNotifier.Listener mSpeedListener = new SpeedNotifier.Listener() {
         public void valueChanged(float value) {
             mSpeed = value;
@@ -343,9 +339,9 @@ public class StepService extends Service {
             }
         }
     };
-    /**
+    *//**
      * Forwards calories values from CaloriesNotifier to the activity. 
-     */
+     *//*
     private CaloriesNotifier.Listener mCaloriesListener = new CaloriesNotifier.Listener() {
         public void valueChanged(float value) {
             mCalories = value;
@@ -357,7 +353,7 @@ public class StepService extends Service {
             }
         }
     };
-    
+    */
     /**
      * Show a notification while this service is running.
      */
@@ -387,29 +383,29 @@ public class StepService extends Service {
                 // Unregisters the listener and registers it again.
                 StepService.this.unregisterDetector();
                 StepService.this.registerDetector();
-                if (mPedometerSettings.wakeAggressively()) {
+               /* if (mPedometerSettings.wakeAggressively()) {
                     wakeLock.release();
                     acquireWakeLock();
-                }
+                }*/
             }
         }
     };
 
-    private void acquireWakeLock() {
-        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        int wakeFlags;
-        if (mPedometerSettings.wakeAggressively()) {
-            wakeFlags = PowerManager.SCREEN_DIM_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP;
-        }
-        else if (mPedometerSettings.keepScreenOn()) {
-            wakeFlags = PowerManager.SCREEN_DIM_WAKE_LOCK;
-        }
-        else {
-            wakeFlags = PowerManager.PARTIAL_WAKE_LOCK;
-        }
-        wakeLock = pm.newWakeLock(wakeFlags, TAG);
-        wakeLock.acquire();
-    }
+//    private void acquireWakeLock() {
+//        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+//        int wakeFlags;
+//        /*if (mPedometerSettings.wakeAggressively()) {
+//            wakeFlags = PowerManager.SCREEN_DIM_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP;
+//        }
+//        else if (mPedometerSettings.keepScreenOn()) {
+//            wakeFlags = PowerManager.SCREEN_DIM_WAKE_LOCK;
+//        }
+//        else {
+//            wakeFlags = PowerManager.PARTIAL_WAKE_LOCK;
+//        }*/
+//        wakeLock = pm.newWakeLock(wakeFlags, TAG);
+//        wakeLock.acquire();
+//    }
 
 }
 

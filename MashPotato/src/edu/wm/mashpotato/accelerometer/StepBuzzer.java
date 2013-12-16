@@ -14,18 +14,18 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+ 
 
 package edu.wm.mashpotato.accelerometer;
 
 import android.content.Context;
 import android.os.Vibrator;
 
-/**
+*//**
  * Vibrates whenever a step is detected.
  * Normally, this is not attached, used for debugging purposes.
  * @author Levente Bagi
- */
+ *//*
 public class StepBuzzer implements StepListener {
     
     private Context mContext;
@@ -49,3 +49,4 @@ public class StepBuzzer implements StepListener {
     }
 }
 
+*/

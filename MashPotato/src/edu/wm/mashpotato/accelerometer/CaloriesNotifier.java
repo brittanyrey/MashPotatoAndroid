@@ -14,15 +14,15 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+ 
 
 package edu.wm.mashpotato.accelerometer;
 
 
-/**
+*//**
  * Calculates and displays the approximate calories.  
  * @author Levente Bagi
- */
+ *//*
 public class CaloriesNotifier implements StepListener, SpeakingTimer.Listener {
 
     public interface Listener {
@@ -115,3 +115,4 @@ public class CaloriesNotifier implements StepListener, SpeakingTimer.Listener {
 
 }
 
+*/

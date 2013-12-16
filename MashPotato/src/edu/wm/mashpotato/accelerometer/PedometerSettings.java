@@ -14,16 +14,16 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+ 
 
 package edu.wm.mashpotato.accelerometer;
 
 import android.content.SharedPreferences;
 
-/**
+*//**
  * Wrapper for {@link SharedPreferences}, handles preferences-related tasks.
  * @author Levente Bagi
- */
+ *//*
 public class PedometerSettings {
 
     SharedPreferences mSettings;
@@ -177,3 +177,4 @@ public class PedometerSettings {
     }
 
 }
+*/

@@ -98,7 +98,7 @@ public class GameUpdateService extends Service implements LocationListener{
           pairs.add(new BasicNameValuePair(Constants.lng, lng+""));
           pairs.add(new BasicNameValuePair(Constants.lat, lat+""));
           DownloadWebPageTask task = new DownloadWebPageTask(true, username, password, pairs, true);
-          task.execute(new String[] { Constants.updatePlayerInfo });
+         //TODO uncomment // task.execute(new String[] { Constants.updatePlayerInfo });
           // Log.e(TAG, "Started");
           return super.onStartCommand(intent, flags, startId);
    }

@@ -14,7 +14,7 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+ 
 
 package edu.wm.mashpotato.accelerometer.prefs;
 
@@ -23,10 +23,10 @@ import android.content.Context;
 import android.preference.EditTextPreference;
 import android.util.AttributeSet;
 
-/**
+*//**
  * An {@link EditTextPreference} that only allows float values.
  * @author Levente Bagi
- */
+ *//*
 public class BodyWeightPreference extends EditMeasurementPreference {
 
 	public BodyWeightPreference(Context context) {
@@ -46,3 +46,4 @@ public class BodyWeightPreference extends EditMeasurementPreference {
 	}
 }
 
+*/

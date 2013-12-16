@@ -12,8 +12,11 @@
     <string name="lastName">Last Name: </string>
     <string name="register">Register</string>
     <string name="login">Login</string>
+    <string name="t">96</string>
+    <string name="shake">Shake the device to cool down the potato\'s temperature! \nYour fate is in your hand!</string>
     <string name="maxGameTime">Set max round length (in minutes):</string>
     <string name="logout">Log Out</string>
+    <string name="potatoTemperature">Potato Temperature</string>
     <string name="error_field_required">Error-This field is required.</string>
     <string name="error_invalid_password">Error-Password invalid.</string>
     <string name="error_incorrect_password">Error-Incorrect password.</string>

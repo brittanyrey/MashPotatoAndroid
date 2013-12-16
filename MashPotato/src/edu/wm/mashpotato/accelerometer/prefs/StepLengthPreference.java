@@ -1,14 +1,14 @@
-package edu.wm.mashpotato.accelerometer.prefs;
+/*package edu.wm.mashpotato.accelerometer.prefs;
 
 import edu.wm.mashpotato.R;
 import android.content.Context;
 import android.util.AttributeSet;
 
 
-/**
+*//**
  * An {@link EditTextPreference} that only allows float values.
  * @author Levente Bagi
- */
+ *//*
 public class StepLengthPreference extends EditMeasurementPreference {
 
 	public StepLengthPreference(Context context) {
@@ -28,3 +28,4 @@ public class StepLengthPreference extends EditMeasurementPreference {
 	}
 }
 
+*/

@@ -14,19 +14,19 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+ 
 
 package edu.wm.mashpotato.accelerometer;
 
 
-/**
+*//**
  * Calculates and displays pace (steps / minute), handles input of desired pace,
  * notifies user if he/she has to go faster or slower.
  * 
  * Uses {@link PaceNotifier}, calculates speed as product of pace and step length.
  * 
  * @author Levente Bagi
- */
+ *//*
 public class SpeedNotifier implements PaceNotifier.Listener, SpeakingTimer.Listener {
 
     public interface Listener {
@@ -44,14 +44,14 @@ public class SpeedNotifier implements PaceNotifier.Listener, SpeakingTimer.Liste
     PedometerSettings mSettings;
     Utils mUtils;
 
-    /** Desired speed, adjusted by the user */
+    *//** Desired speed, adjusted by the user *//*
     float mDesiredSpeed;
     
-    /** Should we speak? */
+    *//** Should we speak? *//*
     boolean mShouldTellFasterslower;
     boolean mShouldTellSpeed;
     
-    /** When did the TTS speak last time */
+    *//** When did the TTS speak last time *//*
     private long mSpokenAt = 0;
     
     public SpeedNotifier(Listener listener, PedometerSettings settings, Utils utils) {
@@ -97,9 +97,9 @@ public class SpeedNotifier implements PaceNotifier.Listener, SpeakingTimer.Liste
         notifyListener();
     }
     
-    /**
+    *//**
      * Say slower/faster, if needed.
-     */
+     *//*
     private void tellFasterSlower() {
         if (mShouldTellFasterslower && mUtils.isSpeakingEnabled()) {
             long now = System.currentTimeMillis();
@@ -157,3 +157,4 @@ public class SpeedNotifier implements PaceNotifier.Listener, SpeakingTimer.Liste
 
 }
 
+*/

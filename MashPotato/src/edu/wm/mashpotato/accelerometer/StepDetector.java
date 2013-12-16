@@ -112,7 +112,6 @@ public class StepDetector implements SensorEventListener
     }
     
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        // TODO Auto-generated method stub
     }
 
 }

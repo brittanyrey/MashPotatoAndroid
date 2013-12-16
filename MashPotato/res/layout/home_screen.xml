@@ -10,155 +10,121 @@
     <ImageButton
         android:id="@+id/stats"
         android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_gravity="left" />
+        android:layout_height="50dp" />
 
     <ImageView
         android:id="@+id/imageView1"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-	    android:layout_toLeftOf="@id/stats"
+        android:layout_height="50dp"
+        android:layout_toLeftOf="@+id/logout"
+        android:layout_toRightOf="@id/stats"
+        android:layout_centerHorizontal="true"
+        android:scaleType="fitXY"
         android:src="@drawable/logo" />
 
-    <Button
+    <ImageButton
         android:id="@+id/logout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-	    android:layout_toLeftOf="@id/imageView1"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true"
         android:text="@string/logout" />
 
     <ViewFlipper
         android:id="@+id/ViewFlipper01"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/stats" >
 
         <!-- adding views to ViewFlipper -->
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:gravity="center"
             android:orientation="vertical" >
 
-            <TableRow
-                android:id="@+id/tableRow1434"
+            <TextView
+                android:id="@+id/username"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="@string/username"
+                android:textSize="28sp" />
 
-                <TextView
-                    android:id="@+id/textView1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="@string/statsTitle"
-                    android:textSize="35sp" />
-            </TableRow>
-
-            <TableRow
-                android:id="@+id/tableRow2"
+            <TextView
+                android:id="@+id/textView77"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/username"
+                android:text="@string/playerStatus"
+                android:textSize="15sp" />
 
-                <TextView
-                    android:id="@+id/username"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="@string/username"
-                    android:textSize="35sp" />
-            </TableRow>
-
-            <TableRow
-                android:id="@+id/tableRow8"
+            <TextView
+                android:id="@+id/playerStatus"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/username"
+                android:layout_alignParentRight="true"
+                android:text="@string/playerType"
+                android:textSize="15sp" />
 
-                <TextView
-                    android:id="@+id/textView77"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/playerStatus"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:id="@+id/playerStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:text="@string/playerType"
-                    android:textSize="20sp" />
-            </TableRow>
-
-            <TableRow
-                android:id="@+id/tableRow62345"
+            <TextView
+                android:id="@+id/textView9247"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView77"
+                android:text="@string/hasPotato"
+                android:textSize="15sp" />
 
-                <TextView
-                    android:id="@+id/textView9247"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/hasPotato"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:id="@+id/hasPotato"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:text="@string/numKills"
-                    android:textSize="20sp" />
-            </TableRow>
-
-            <TableRow
-                android:id="@+id/tableRow6"
+            <TextView
+                android:id="@+id/hasPotato"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView77"
+                android:layout_alignParentRight="true"
+                android:text="@string/numKills"
+                android:textSize="15sp" />
 
-                <TextView
-                    android:id="@+id/textView97"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/score"
-                    android:textSize="20sp" />
+            <TextView
+                android:id="@+id/textView97"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView9247"
+                android:text="@string/score"
+                android:textSize="15sp" />
 
-                <TextView
-                    android:id="@+id/score"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:text="@string/numKills"
-                    android:textSize="20sp" />
-            </TableRow>
+            <TextView
+                android:id="@+id/score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_below="@+id/textView9247"
+                android:layout_alignParentRight="true"
+                android:text="@string/numKills"
+                android:textSize="15sp" />
 
             <ImageView
                 android:id="@+id/avatar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/textView97"
+                android:layout_centerHorizontal="true"
+                android:layout_above="@+id/leaveGame"
                 android:src="@drawable/cube" />
 
-            <TableRow
-                android:id="@+id/tableRow6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
-
-                <Button
-                    android:id="@+id/leaveGame"
-                    android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:text="@string/leaveGame" >
-                </Button>
-            </TableRow>
-        </LinearLayout>
+            <Button
+                android:id="@+id/leaveGame"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:text="@string/leaveGame" >
+            </Button>
+        </RelativeLayout>
 
         <!-- view 2 -->
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:gravity="center"
             android:orientation="vertical" >
 
             <TableRow
@@ -167,7 +133,7 @@
                 android:layout_height="wrap_content" >
 
                 <ImageView
-                    android:id="@+id/imageView1"
+                    android:id="@+id/imageView11233"
                     android:layout_width="fill_parent"
                     android:layout_height="190dp"
                     android:src="@android:drawable/btn_dialog" />

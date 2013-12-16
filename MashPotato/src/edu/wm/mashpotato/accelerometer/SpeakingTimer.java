@@ -14,17 +14,17 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+ 
 
 package edu.wm.mashpotato.accelerometer;
 
 import java.util.ArrayList;
 
-/**
+*//**
  * Call all listening objects repeatedly. 
  * The interval is defined by the user settings.
  * @author Levente Bagi
- */
+ *//*
 public class SpeakingTimer implements StepListener {
 
     PedometerSettings mSettings;
@@ -85,3 +85,4 @@ public class SpeakingTimer implements StepListener {
     }
 }
 
+*/
