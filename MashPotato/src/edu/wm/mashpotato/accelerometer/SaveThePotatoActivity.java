@@ -36,6 +36,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class SaveThePotatoActivity extends Activity {
@@ -43,6 +44,8 @@ public class SaveThePotatoActivity extends Activity {
 	private SharedPreferences mSettings;
 //	private PedometerSettings mPedometerSettings;
 	private Utils mUtils;
+	private ProgressBar pBar;
+	private TextView level;
 
 	private TextView mStepValueView;
 	private int mStepValue;
@@ -99,6 +102,8 @@ public class SaveThePotatoActivity extends Activity {
 		/*mPedometerSettings.clearServiceRunning();*/
 
 		mStepValueView = (TextView) findViewById(R.id.temp);
+		level = (TextView) findViewById(R.id.heat);
+
 	}
 
 	@Override

@@ -9,6 +9,7 @@
 
     <ImageButton
         android:id="@+id/stats"
+        android:layout_marginLeft="3dp"
         android:layout_width="50dp"
         android:layout_height="50dp" />
 
@@ -16,9 +17,9 @@
         android:id="@+id/imageView1"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
+        android:layout_centerHorizontal="true"
         android:layout_toLeftOf="@+id/logout"
         android:layout_toRightOf="@id/stats"
-        android:layout_centerHorizontal="true"
         android:scaleType="fitXY"
         android:src="@drawable/logo" />
 
@@ -27,6 +28,8 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentRight="true"
+        android:scaleX=".7"
+        android:scaleY=".7"
         android:text="@string/logout" />
 
     <ViewFlipper
@@ -47,6 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp"
                 android:text="@string/username"
                 android:textSize="28sp" />
 
@@ -55,6 +59,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/username"
+                android:layout_marginLeft="30dp"
                 android:text="@string/playerStatus"
                 android:textSize="15sp" />
 
@@ -62,8 +67,9 @@
                 android:id="@+id/playerStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/username"
                 android:layout_alignParentRight="true"
+                android:layout_below="@+id/username"
+                android:layout_marginRight="30dp"
                 android:text="@string/playerType"
                 android:textSize="15sp" />
 
@@ -72,6 +78,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textView77"
+                android:layout_marginLeft="30dp"
                 android:text="@string/hasPotato"
                 android:textSize="15sp" />
 
@@ -79,8 +86,9 @@
                 android:id="@+id/hasPotato"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/textView77"
                 android:layout_alignParentRight="true"
+                android:layout_below="@+id/textView77"
+                android:layout_marginRight="30dp"
                 android:text="@string/numKills"
                 android:textSize="15sp" />
 
@@ -89,6 +97,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textView9247"
+                android:layout_marginLeft="30dp"
                 android:text="@string/score"
                 android:textSize="15sp" />
 
@@ -96,9 +105,10 @@
                 android:id="@+id/score"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_below="@+id/textView9247"
                 android:layout_alignParentRight="true"
+                android:layout_below="@+id/textView9247"
+                android:layout_gravity="right"
+                android:layout_marginRight="30dp"
                 android:text="@string/numKills"
                 android:textSize="15sp" />
 
@@ -106,9 +116,9 @@
                 android:id="@+id/avatar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_above="@+id/leaveGame"
                 android:layout_below="@+id/textView97"
                 android:layout_centerHorizontal="true"
-                android:layout_above="@+id/leaveGame"
                 android:src="@drawable/cube" />
 
             <Button
@@ -122,43 +132,40 @@
 
         <!-- view 2 -->
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:orientation="vertical" >
 
-            <TableRow
-                android:id="@+id/tableRow1"
+            <ImageView
+                android:id="@+id/map"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content" >
+                android:layout_height="190dp"
+                android:layout_centerHorizontal="true"
+                android:src="@android:drawable/btn_dialog" />
 
-                <ImageView
-                    android:id="@+id/imageView11233"
-                    android:layout_width="fill_parent"
-                    android:layout_height="190dp"
-                    android:src="@android:drawable/btn_dialog" />
-            </TableRow>
-
-            <TableRow
-                android:id="@+id/tableRow6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
-
-                <Button
-                    android:id="@+id/saveThePotato"
-                    android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:text="@string/savePotato" >
-                </Button>
-            </TableRow>
+            <Button
+                android:id="@+id/saveThePotato"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/map"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:text="@string/savePotato" >
+            </Button>
 
             <ListView
                 android:id="@+id/listView1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_below="@+id/saveThePotato"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp" >
             </ListView>
-        </LinearLayout>
+        </RelativeLayout>
     </ViewFlipper>
 
 </RelativeLayout>

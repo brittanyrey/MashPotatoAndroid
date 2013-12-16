@@ -76,7 +76,7 @@ public class HomeScreenActivity extends Activity
 	// home pg
 	private Button savePotato;
 	private ImageButton stats;
-	private Button logout;
+	private ImageButton logout;
 	private ListView lv;
 
 	// stats pg
@@ -118,7 +118,7 @@ public class HomeScreenActivity extends Activity
 		viewFlipper = (ViewFlipper) findViewById(R.id.ViewFlipper01);
 		savePotato = (Button) findViewById(R.id.saveThePotato);
 		lv = (ListView) findViewById(R.id.listView1);
-		logout = (Button) findViewById(R.id.logout);
+		logout = (ImageButton) findViewById(R.id.logout);
 		stats = (ImageButton) findViewById(R.id.stats);
 
 		usernameText = (TextView) findViewById(R.id.username);
@@ -137,7 +137,7 @@ public class HomeScreenActivity extends Activity
 		viewFlipper.showNext();
 		stats.setBackgroundResource(R.drawable.info);
 		stats.setColorFilter(new PorterDuffColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY));
-
+		logout.setBackgroundResource(R.drawable.power);
 		
 		  mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
 		  if(player.isHasString()){
