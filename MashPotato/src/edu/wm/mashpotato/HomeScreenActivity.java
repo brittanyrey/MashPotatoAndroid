@@ -643,7 +643,7 @@ public class HomeScreenActivity extends Activity implements
 			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 			if (player.isHasString()) {
 				pairs.add(new BasicNameValuePair(Constants.potatoId, player
-						.getPotatoList().get(0)));
+						.getPotatoList().get(0)+""));
 				pairs.add(new BasicNameValuePair(Constants.temp, gameObj
 						.getPotato().get(0).getTemp()
 						+ ""));

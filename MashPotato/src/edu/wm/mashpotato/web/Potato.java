@@ -96,7 +96,7 @@ public class Potato implements Serializable {
     	long d = new Date().getTime();
     	Random r = new Random(d);
     	long e = (d - creationDate) * 100 / lifeSpan;
-    	steps = (int) Math.log1p(steps);
+    	steps = (int) Math.log(steps);
     	temp = temp - steps + (int)e;
     	if(temp < 0){
     		temp = 0;
